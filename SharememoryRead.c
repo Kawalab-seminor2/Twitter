@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -6,6 +8,7 @@
 void main(){
     int id;
     char *adr;
+    char prevtweet[140];
 
     if((id=shmget(IPC_PRIVATE,512,IPC_CREAT|0666))==-1){
         perror("shmget");
@@ -19,12 +22,18 @@ void main(){
     }
     else{
         strcpy(adr,"Initial");
+        strcpy(prevtweet,"Initial");
+        printf("%s\n",adr);
         while(1){
-            printf("%s\n",adr);
-            if(strcmp(adr,"end")==0){
-            break;
+            if(strcmp(prevtweet,adr)!=0){
+                printf("%s\n",adr);
             }
-        sleep(3);
+            else if(strcmp(adr,"end")==0){
+                break;
+            }
+            strcpy(prevtweet,adr);
+            sleep(3);
+        
         }
 
         if(shmdt(adr)==-1){
