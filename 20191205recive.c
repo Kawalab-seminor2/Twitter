@@ -5,7 +5,7 @@
 
 void main(){
     int id;
-    char *adr;
+    char *adr,A[10];
     if((id=shmget(IPC_PRIVATE,512,IPC_CREAT|0666))==-1){
         perror("shmat");
         exit(-1);
@@ -14,12 +14,20 @@ void main(){
     if((adr=shmat(id,0,0))==-1){
         perror("shmat");
     }else{
+       
         strcpy(adr,"Initial");
-        while(1){
-            printf("%s\n",adr);
-            if(strcmp(adr,"end")==0){
+        strcpy(A,"Initial");
+        while(1){ 
+            
+            if(strcmp(A,adr)!=0){
+                 printf("%s\n",adr);
+                if(strcmp(adr,"end")==0){
                 break;
+                }
+                strcpy(A,adr);
             }
+            
+            
             sleep(3);
         }
         if(shmdt(adr)==-1){
