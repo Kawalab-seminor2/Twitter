@@ -2,18 +2,21 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-
+#include <stdlib.h>
 
 void main(argc,argv)
 int argc;
 char *argv[];
 {
 int id,a;
-char *adr;
-int x=1;
-x=getpid();
+char *adr ,*b;
+char x=1;
+x=(char)getpid();
 
-scanf("%d", &a);
+
+while(1){
+    printf("1:tweet 2:follow 9:exit -> ");
+    scanf("%d", &a);
 switch (a) {
 	case 1:
 		if(argc<=1){
@@ -27,28 +30,33 @@ switch (a) {
             perror("shmat");
         }else{
             while(1){
-                printf("%d:",x);
-                gets(adr);
+                printf("%s:",x);
+                
+                scanf("%s", b);
+
+                *adr=strcat(x,b);
                 if(strcmp(adr,"end")==0){
                     break;
                 }
+                break;
             }
 
             if(shmdt(adr)==-1){
                 perror("shmdt");
             }
-            }
+            break;
+        }
 		break;
 	case 2:
 		printf("a = 3\n");
 		break;
-	case 5:
-		printf("a = 5\n");
+	case 9:
+		exit(1);
 		break;
 	default:
 		printf("others\n");
 		break;
 }
 
-
+}
 }
