@@ -10,10 +10,11 @@ char *argv[];
 {
 int id,a;
 char *adr; 
-char A[60],b[140];
-char *x;
+char A[60],b[140],c[140];
+char *x,*d;
 char *C;
-x="b";
+int count=0;
+strcpy(c,"b");
 C="userA";
 
 while(1){
@@ -32,12 +33,16 @@ switch (a) {
             perror("shmat");
         }else{
             while(1){
-                x="b";
-                printf("%s:",x);
+                d="b";
+                printf("%s:",d);
                 scanf("%s", b);
-                strcpy(adr,x);
+                strcat(adr,d);
+                if(count>=1){
+                    strcat(adr,d);
+                }
                 strcat(adr,",");
                 strcat(adr,b);
+                count ++;
                 if(strcmp(adr,"end")==0){
                     break;
                 }
@@ -58,7 +63,9 @@ switch (a) {
             perror("shmat");
         }else{
     
-        strcpy(adr,C);
+
+    
+        strcpy(adr, C);
         while(1){
             if(strcmp(C,adr)!=0){
                 printf("%s\n",adr);

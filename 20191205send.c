@@ -11,10 +11,11 @@ char *argv[];
 int id,a;
 char *adr; 
 char A[60],b[140],c[140];
-char *x;
+char *x,*d;
 char *C;
+int count=0;
 strcpy(c,"a");
-C="B";
+C="userB";
 
 while(1){
     printf("1:tweet 2:follow 9:exit -> ");
@@ -32,12 +33,16 @@ switch (a) {
             perror("shmat");
         }else{
             while(1){
-                strcpy(c,"a");
-                printf("%s:",c);
+                d="a";
+                printf("%s:",d);
                 scanf("%s", b);
-                *adr=*c;
+                strcat(adr,d);
+                if(count>=1){
+                    strcat(adr,d);
+                }
                 strcat(adr,",");
                 strcat(adr,b);
+                count ++;
                 if(strcmp(adr,"end")==0){
                     break;
                 }

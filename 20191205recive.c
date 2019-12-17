@@ -4,12 +4,7 @@
 #include<sys/shm.h>
 #include <string.h>
 #include <stdlib.h>
-enum user{
-    ユーザA,
-    reユーザA,
 
-
-};
 
 
 
@@ -19,6 +14,7 @@ int main(){
     char *adr,A[60],B[60],C[60],D[60],E[60],userA[140],userB[140];
     char *ptr;
     *userA=NULL;
+    *userB=NULL;
     if((id=shmget(IPC_PRIVATE,512,IPC_CREAT|0666))==-1){
         perror("shmat");
         exit(-1);
@@ -27,16 +23,16 @@ int main(){
     if((adr=shmat(id,0,0))==-1){
         perror("shmat");
     }else{
-printf("111共有メモリID=%d\n",id);
+        printf("111共有メモリID=%d\n",id);
         //strcpy(adr,"Initial");
         //strcpy(A,"Initial");
         strcpy(B,"a");
         strcpy(E,"b");
-        strcpy(C,"A");
-        strcpy(D,"B");
+        strcpy(C,"userA");
+        strcpy(D,"userB");
         printf("%s\n",adr);
         while(1){ printf("%s \n",adr);
-printf("222共有メモリID=%d\n",id);
+            printf("222共有メモリID=%d\n",id);
             if((strcmp(A,adr)!=0)&&(adr!=NULL)){
                 
                 strtok(adr,",");
