@@ -4,6 +4,7 @@
 #include <sys/shm.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 int main(argc,argv)
 int argc;
 char *argv[];

@@ -4,6 +4,9 @@
 #include <sys/shm.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+
 int main(argc,argv)
 int argc;
 char *argv[];
@@ -11,8 +14,8 @@ char *argv[];
 int id,a;
 char *adr; 
 char A[60],b[140],c[140];
-char *x,*d;
-char *C;
+char *x,*d,*e ;
+char *C,Q[10];
 int count=0;
 strcpy(c,"b");
 C="userA,";
@@ -64,24 +67,21 @@ switch (a) {
         }else{
     
 
-    
-        strcat(adr, C);
+    *adr=Q[0]; 
+        e="userA"; strcat(adr,e);
+        printf("%s\n",adr);
         while(1){
-            strtok(adr,",");
-            printf("%s \n",adr);
-
-            if(strcmp("a",adr)==0){
-                adr=strtok(NULL,",");
-                printf("userA=%s\n",adr);
-            
+            if(strcmp(e,adr)!=0){
+                printf("%s\n",adr);
                 break;
             }else if(strcmp(adr,"end")==0){
                     break;
                 }
-            
+            strcpy(A,adr); 
             sleep(3);
 
         }
+        
 
         }	
 		break;
