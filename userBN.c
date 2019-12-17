@@ -15,7 +15,7 @@ char *x,*d;
 char *C;
 int count=0;
 strcpy(c,"b");
-C="userA";
+C="userA,";
 
 while(1){
     printf("1:tweet 2:follow 9:exit -> ");
@@ -65,15 +65,20 @@ switch (a) {
     
 
     
-        strcpy(adr, C);
+        strcat(adr, C);
         while(1){
-            if(strcmp(C,adr)!=0){
-                printf("%s\n",adr);
+            strtok(adr,",");
+            printf("%s \n",adr);
+
+            if(strcmp("a",adr)==0){
+                adr=strtok(NULL,",");
+                printf("userA=%s\n",adr);
+            
                 break;
             }else if(strcmp(adr,"end")==0){
                     break;
                 }
-            strcpy(A,adr); 
+            
             sleep(3);
 
         }

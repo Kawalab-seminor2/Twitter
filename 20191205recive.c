@@ -13,8 +13,7 @@ int main(){
     int id;
     char *adr,A[60],B[60],C[60],D[60],E[60],userA[140],userB[140];
     char *ptr;
-    *userA=NULL;
-    *userB=NULL;
+   
     if((id=shmget(IPC_PRIVATE,512,IPC_CREAT|0666))==-1){
         perror("shmat");
         exit(-1);
@@ -46,15 +45,18 @@ int main(){
                         }
                         
                     
-                        printf("%s\n",adr);
+                        printf("%s\n",userA);
                         
                         
                 }else if(strcmp(C,adr)==0){
-                    ptr=strtok(NULL,",");
+                    
                     if(*userA==NULL){
                         strcpy(adr,"ユーザAのツイートはありません");
                     }
-                        strcpy(adr,userA);
+                    printf("%s",userA);
+                        adr="a";
+                        strcat(adr,",");
+                        strcat(adr,userA);
                         printf("%s\n",adr);
 
                 }else if(strcmp(D,adr)==0){
