@@ -32,18 +32,26 @@ int main(){
         strcpy(C,"userA");
         strcpy(D,"userB");
         printf("%s\n",adr);
-        while(1){ printf("%s; \n",adr);
-        
+        while(1){ 
+            //strtok(adr,",");
+            printf("1 %s; \n",adr);
             printf("222共有メモリID=%d\n",id);
-            if(strcmp(&Q[0],adr)!=0){printf("good0") ; 
+            //if(strcmp(A,adr)!=0){
+                printf("good0") ; 
                 if(strcmp(C,adr)==0){
                     
                     printf("good1") ; 
                     printf("%s",userA);
                     printf("good2") ;  
                         strcpy(adr,userA);
+                        sleep(3);
+                        shmdt(adr);
+                        if((adr=(char *)shmat(id,0,0))==(void *)-1){
+                            perror("shmat");
+                        }
+                        //*adr=userA[0];
                         printf("%s\n",adr);
-
+                        //memset((void *) *adr, 0,256);
                 }else if(strcmp(D,adr)==0){
                     ptr=strtok(NULL,",");
                     
@@ -61,11 +69,19 @@ int main(){
                         
                         strcpy(userA,adr);
                         
-                        
-                    
+                        sleep(1);
+                    shmdt(adr);
+if((adr=(char *)shmat(id,0,0))==(void *)-1){
+            perror("shmat");
+        }
                         printf("%s\n",userA);
-                        *adr=Q[0];
                         
+                        *adr=Q[0];
+                        shmdt(adr);
+if((adr=(char *)shmat(id,0,0))==(void *)-1){
+            perror("shmat");
+        }
+                        //memset((void *) *adr, 0,256);
                 }else if((strcmp(E,adr)==0)||(strcmp(EE,adr)==0)){
                         adr=strtok(NULL,",");
                         printf("userB=%s\n",adr);
@@ -76,13 +92,16 @@ int main(){
                     
                         printf("%s\n",userB);
                         *adr=Q[0];
+                        //memset((void *) *adr, 0,256);
                         
                 }else{
-                    printf("判定ミス");
+                    printf("判定ミス\n");
                     
                 }  *adr=Q[0]; 
+                //memset((void *) *adr, 0,256);
                 }
-            }else if(strcmp(adr,"end")==0){
+            //}else 
+            if(strcmp(adr,"end")==0){
                             break;
                 }
 
@@ -90,8 +109,8 @@ int main(){
 
             sleep(1);
             
-            sleep(2);
             
+            //strcpy(A,adr);
             }
             if(shmdt(adr)==-1){
                 perror("shmdt");

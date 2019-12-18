@@ -29,12 +29,16 @@ switch (a) {
             exit(-1);
         }
 
-        id=atoi(argv[1]);
+        //id=atoi(argv[1]);
 
-        if((adr=(char *)shmat(id,0,0))==(void *)-1){
-            perror("shmat");
-        }else{
+        //if((adr=(char *)shmat(id,0,0))==(void *)-1){
+           // perror("shmat");
+        //}else{
             while(1){
+                id=atoi(argv[1]);
+                if((adr=(char *)shmat(id,0,0))==(void *)-1){
+                    perror("shmat");
+                }
                 d="a";
                 printf("%s:",d);
                 scanf("%s", b);
@@ -42,8 +46,10 @@ switch (a) {
                 if(count>=0){
                     strcat(adr,d);
                 }
-                strcat(adr,",");
+                strcat(adr,","); printf("1");
                 strcat(adr,b);
+                printf("1");
+                //shmdt(adr);
                 count ++;
                 if(strcmp(adr,"end")==0){
                     break;
@@ -55,7 +61,7 @@ switch (a) {
                 perror("shmdt");
             }
             break;
-        }
+       // }
 		break;
 
 	case 2:

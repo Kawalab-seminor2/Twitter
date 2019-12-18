@@ -18,23 +18,30 @@ char *x,*d,*e ;
 char *C,Q[10];
 int count=0;
 strcpy(c,"b");
-C="userA,";
-
+C="rA";
+        if(argc<=1){
+            fprintf(stderr,"共有メモリIDを引数に指定すること。\n");
+            exit(-1);
+        }
+        id=atoi(argv[1]);
+        if((adr=(char *)shmat(id,0,0))==(void *)-1){
+            perror("shmat");
+        }
 while(1){
     printf("1:tweet 2:follow 9:exit -> ");
     scanf("%d", &a);
 switch (a) {
 	case 1:
-		if(argc<=1){
-            fprintf(stderr,"共有メモリIDを引数に指定すること。\n");
-            exit(-1);
-        }
+		//if(argc<=1){
+           // fprintf(stderr,"共有メモリIDを引数に指定すること。\n");
+            //exit(-1);
+       // }
 
-        id=atoi(argv[1]);
+       // id=atoi(argv[1]);
 
-        if((adr=(char *)shmat(id,0,0))==(void *)-1){
-            perror("shmat");
-        }else{
+        //if((adr=(char *)shmat(id,0,0))==(void *)-1){
+            //perror("shmat");
+        //}else{
             while(1){
                 d="b";
                 printf("%s:",d);
@@ -56,20 +63,30 @@ switch (a) {
                 perror("shmdt");
             }
             break;
-        }
+       // }
 		break;
 
 	case 2:
-    id=atoi(argv[1]);
+            //if(strcmp(A,adr)!=0){
+   id=atoi(argv[1]);
 
         if((adr=(char *)shmat(id,0,0))==(void *)-1){
             perror("shmat");
         }else{
     
+        printf("1 %s\n",adr);
+        //*adr=Q[0]; 
+        printf("2 %s\n",adr);
+        e="userA"; 
+        strcpy(adr,e);
+            //if(strcmp(A,adr)!=0){
+        printf("3%s\n",adr);
+        sleep(1);
+        shmdt(adr);
+if((adr=(char *)shmat(id,0,0))==(void *)-1){
+            perror("shmat");
+        }
 
-    *adr=Q[0]; 
-        e="userA"; strcat(adr,e);
-        printf("%s\n",adr);
         while(1){
             if(strcmp(e,adr)!=0){
                 printf("%s\n",adr);
@@ -77,15 +94,19 @@ switch (a) {
             }else if(strcmp(adr,"end")==0){
                     break;
                 }
-            strcpy(A,adr); 
+            //strcpy(A,adr); 
             sleep(3);
+            //if(strcmp(A,adr)!=0){
 
         }
-        
+         if(shmdt(adr)==-1){
+                perror("shmdt");
+            }
 
         }	
 		break;
 	case 9:
+            //if(strcmp(A,adr)!=0){
 		exit(1);
 		break;
 	default:
