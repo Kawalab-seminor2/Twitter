@@ -11,21 +11,23 @@
 
 int main(){
     int id;
-    char *adr,A[60],B[60],C[60],D[60],E[60],userA[140],userB[140];
+    char *adr,A[60],B[60],BB[60],C[60],D[60],E[60],EE[60],userA[140],userB[140];
     char *ptr,Q[10];
-   
+    
     if((id=shmget(IPC_PRIVATE,512,IPC_CREAT|0666))==-1){
         perror("shmat");
         exit(-1);
     }
     printf("共有メモリID=%d\n",id);
-    if((adr=shmat(id,0,0))==-1){
+    if((adr=(char *)shmat(id,0,0))==(void *)-1){
         perror("shmat");
     }else{
         printf("111共有メモリID=%d\n",id);
         //strcpy(adr,"Initial");
         //strcpy(A,"Initial");
         strcpy(B,"a");
+        strcpy(BB,"aa");
+        strcpy(EE,"bb");
         strcpy(E,"b");
         strcpy(C,"userA");
         strcpy(D,"userB");
@@ -33,12 +35,12 @@ int main(){
         while(1){ printf("%s; \n",adr);
         
             printf("222共有メモリID=%d\n",id);
-            if(strcmp(A,adr)!=0){printf("good0") ; 
+            if(strcmp(&Q[0],adr)!=0){printf("good0") ; 
                 if(strcmp(C,adr)==0){
                     
-                   printf("good1") ; 
+                    printf("good1") ; 
                     printf("%s",userA);
-                     printf("good2") ;  
+                    printf("good2") ;  
                         strcpy(adr,userA);
                         printf("%s\n",adr);
 
@@ -53,7 +55,7 @@ int main(){
                 strtok(adr,",");
                 printf("%s \n",adr);
 
-                if(strcmp(B,adr)==0){
+                if((strcmp(B,adr)==0)||(strcmp(BB,adr)==0)){
                         adr=strtok(NULL,",");
                         printf("userA=%s\n",adr);
                         
@@ -64,7 +66,7 @@ int main(){
                         printf("%s\n",userA);
                         *adr=Q[0];
                         
-                }else if(strcmp(E,adr)==0){
+                }else if((strcmp(E,adr)==0)||(strcmp(EE,adr)==0)){
                         adr=strtok(NULL,",");
                         printf("userB=%s\n",adr);
                         
@@ -85,9 +87,10 @@ int main(){
                 }
 
             
-            strcpy(A,adr); 
+
+            sleep(1);
             
-            sleep(3);
+            sleep(2);
             
             }
             if(shmdt(adr)==-1){
@@ -98,5 +101,5 @@ int main(){
         if(shmctl(id,IPC_RMID,0)==-1){
             perror("shmctl");
         }
- return 0;
+return 0;
 }

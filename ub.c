@@ -14,10 +14,9 @@ char *adr;
 char A[60],b[140],c[140];
 char *x,*d;
 char *C;
-char D[60];
 int count=0;
-strcpy(c,"a");
-C="userB";
+strcpy(c,"b");
+C="userA";
 
 while(1){
     printf("1:tweet 2:follow 9:exit -> ");
@@ -35,7 +34,7 @@ switch (a) {
             perror("shmat");
         }else{
             while(1){
-                d="a";
+                d="b";
                 printf("%s:",d);
                 scanf("%s", b);
                 strcat(adr,d);
@@ -66,10 +65,10 @@ switch (a) {
         }else{
     
 
-        D[0]="userA";
-        adr=&D[0];
+    
+        strcpy(adr, C);
         while(1){
-            if(strcmp(&D[0],adr)!=0){
+            if(strcmp(C,adr)!=0){
                 printf("%s\n",adr);
                 break;
             }else if(strcmp(adr,"end")==0){

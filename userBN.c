@@ -32,7 +32,7 @@ switch (a) {
 
         id=atoi(argv[1]);
 
-        if((adr=shmat(id,0,0))==-1){
+        if((adr=(char *)shmat(id,0,0))==(void *)-1){
             perror("shmat");
         }else{
             while(1){
@@ -62,7 +62,7 @@ switch (a) {
 	case 2:
     id=atoi(argv[1]);
 
-        if((adr=shmat(id,0,0))==-1){
+        if((adr=(char *)shmat(id,0,0))==(void *)-1){
             perror("shmat");
         }else{
     
