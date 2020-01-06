@@ -1,3 +1,6 @@
+//usrAとほとんど同じ（ヘッダー識別子とフォロー要求の文字列が違うだけだと思う）のでそちらのコメントを参考にしてください。
+
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -16,17 +19,17 @@ char *x,*d,*e ;
 char *C,Q[10];
 int count=0;
 strcpy(c,"b");
-
+if(argc<=1){
+            fprintf(stderr,"共有メモリIDを引数に指定すること。\n");
+            exit(-1);
+        }
 
 while(1){
     printf("1:tweet 2:follow 9:exit -> ");
     scanf("%d", &a);
 switch (a) {
 	case 1:
-		if(argc<=1){
-            fprintf(stderr,"共有メモリIDを引数に指定すること。\n");
-            exit(-1);
-        }
+		
 
         //id=atoi(argv[1]);
 
