@@ -102,6 +102,7 @@ int main()  //メイン
     while(1){       //選択肢やツイート受信のためのループ
      
     if (kbhit()){//入力がある時この関数に入る
+       printf("option=%d\n",option);
     scanf("%d",&option);   //からの選択肢読み取り
     getchar();
     sleep(1);
@@ -111,7 +112,7 @@ int main()  //メイン
     }
    
     printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-    printf("option=%d\n",option);
+   
     }
 
     if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
