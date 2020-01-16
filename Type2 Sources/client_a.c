@@ -43,7 +43,7 @@ int kbhit(void)     //何か押したら入る関数
  
 int main()  //メイン
 {
-    int     shmid, option=0, followno=0;
+    int     shmid, option=1, followno=0;
     key_t   key;
     char   *data, tweet[999];
     int     followflag=0;
@@ -96,7 +96,7 @@ int main()  //メイン
     
     //自分のユーザ番号と選択肢の表示、この辺いじったらちゃんとツイート受け取り出来そう
     printf("user %d\n", userno);
-    printf("1:tweet 2:follow 9:exit ->");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
+    printf("1:tweet 2:follow 9:exit -> ");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
 
     while(1){       //選択肢やツイート受信のためのループ
       
@@ -162,7 +162,7 @@ int main()  //メイン
       sprintf(data, "%d%s", userno, ",9,");           //「i,9」をdataに格納
       sleep(1);                                       //そのあとbreakで抜け出す
       printf("Twitterを閉じます\n");
-      break;
+      exit(1);
       
     }    
  }

@@ -90,31 +90,25 @@ int main()  //メイン
     sprintf(rec, "%s%d", "r", userno);      //ツイート受け取り識別子作成
                                             //自分がユーザ1ならr1というdataを受け取る
     //printf("%s\n", rec);
-
  
 
  while(1){              //ここからがツイッターのメインの動作
-   
+    
     //自分のユーザ番号と選択肢の表示、この辺いじったらちゃんとツイート受け取り出来そう
     printf("user %d\n", userno);
     printf("1:tweet 2:follow 9:exit\n");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
 
     while(1){       //選択肢やツイート受信のためのループ
-     
-    if (kbhit()){//入力がある時この関数に入る
-       
-    scanf("%d",&option);   //からの選択肢読み取り
-    
+
+    if (kbhit()){           //入力がある時この関数に入る
+    scanf("%d", &option);   //からの選択肢読み取り
     getchar();
     sleep(1);
-      printf("%d\n",option);
-    if(option==1 || option==2 || option==9){//選択肢の数値が来たらループ抜け出して
-     
+    
+    if(option==1 || option==2 || option==9){    //選択肢の数値が来たらループ抜け出して
     	break;                                  //switch文へ
     }
-    
-    printf("選択肢の数値を入力して下さい\n");//選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-    break;
+    printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
     }
 
     if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -137,7 +131,6 @@ int main()  //メイン
     switch(option){        //選択肢の結果による処理
     case 1:
     //tweet
-       option=0;
     printf("Tweet : ");
     fgets(tweet, 999, stdin);   //ツイート入力
     //printf("%s\n",tweet);
@@ -147,14 +140,12 @@ int main()  //メイン
     	int c =getchar();
     	if(c == '\n' || c == EOF) break;
     	}
-   
     sprintf(data, "%d%s%s", userno, ",1,", tweet);  //「i(自分の番号),1,tweet文」
     sleep(1);                                       //て感じでdataに格納
    	break;
     	
     case 2:
     //follow
-       option=0;
     printf("フォローするユーザを指定して下さい(今回は1or2)\nフォロー済みの場合はフォローを解除します\n->user ");
     scanf("%d", &followno);
     sprintf(data, "%d%s%d", userno, ",2,", followno);   //「i(自分の番号),2,follow対象」
