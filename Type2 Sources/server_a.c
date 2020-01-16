@@ -10,7 +10,7 @@
 #include <sys/fcntl.h>
 #include <fcntl.h>
 #include <termios.h>
- 
+
 #define SHMSZ     512
 //実行するプログラムと同じパスにshm.datをいれておくか、サーバの起動時に共有メモリのためのファイルを作成し、サーバ切断の時にファイルを消す手段もある
 int u8len(const char *tweetlen);        //UTF-8の場合はこちらを使用
@@ -159,10 +159,11 @@ int main()          //メイン関数
                 tweet1 = (char*)malloc(sizeof(char) * sizeof(words1));
                 strcpy(tweet1, words1[2]);
                 //sprintf(data, "%s%s", "user1 : ", tweet1);
-                sprintf(user1tweet, "%s%s", "user1 : ", tweet1);
+                sprintf(user1tweet, "user1 : %s", tweet1);
                 //sleep(1);
                 //printf("%s\n", data);
             }
+       	
 
             if(follow2flag==1){             //ツイート受け取り識別子を付加してdataに格納
                 sprintf(data, "%s%s", "r1r2,", user1tweet);
@@ -171,7 +172,7 @@ int main()          //メイン関数
                 sprintf(data, "%s%s", "r1,", user1tweet);
                 sleep(1);
             }
-        }
+	}
         
         else if (strncmp(data, "1,2,", 4) == 0) {       //フォロー処理
                if(follow1flag==0){
@@ -208,7 +209,7 @@ int main()          //メイン関数
                     printf("%s\n", words2[i]);
 
 
-            printf("check : %s\n",words2[2]);
+		printf("check : %s\n",words2[2]);
 
             const char *tweetlen = words2[2];
             tweet2len = u8len(tweetlen);                  //UTF-8の場合はこちらを使用
@@ -235,7 +236,8 @@ int main()          //メイン関数
                 sprintf(data, "%s%s", "r2,", user2tweet);
                 sleep(1);
             }
-        }
+	}
+        
         
         else if (strncmp(data, "2,2,", 4) == 0) {   //ユーザ1と同じように
             printf("ユーザ2　フォロー処理\n");
