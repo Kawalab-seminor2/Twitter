@@ -109,6 +109,7 @@ int main()  //メイン
 	  break;                                  //switch文へ
 	}
 	printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
+	printf("\n1:tweet 2:follow 9:exit -> ");
       }
       
       if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -121,7 +122,7 @@ int main()  //メイン
 	while(rectwe != NULL) {
 	  rectwe = strtok(NULL, ",");
 	  if(rectwe != NULL) {
-	    printf("%s\n", rectwe);      //分割した結果を表示
+	    printf("\n%s\n", rectwe);      //分割した結果を表示
 	  }                               //user 1 :～みたいな感じの表示
 	}
       }
@@ -130,35 +131,44 @@ int main()  //メイン
     switch(option){        //選択肢の結果による処理
     case 1:
       //tweet
+      option = 0;
       printf("Tweet : ");
       fgets(tweet, 999, stdin);   //ツイート入力
       //printf("%s\n",tweet);
       char *s = strchr(tweet, '\n');  //改行文字を終端文字に
       if(s != NULL) *s='\0';
-      else while(1){
-	  int c =getchar();
+      else{
+	while(1){
+	  char c =getchar();
 	  if(c == '\n' || c == EOF) break;
-    	}
-      sprintf(data, "%d%s%s", userno, ",1,", tweet);  //「i(自分の番号),1,tweet文」
+      	}
+      }
+      sprintf(data, "%d,1,%s", userno, tweet);  //「i(自分の番号),1,tweet文」
       sleep(1);                                       //て感じでdataに格納
       break;
       
     case 2:
       //follow
+      option = 0;
       printf("フォローするユーザを指定して下さい(今回は1or2)\nフォロー済みの場合はフォローを解除します\n->user ");
       scanf("%d", &followno);
-      sprintf(data, "%d%s%d", userno, ",2,", followno);   //「i(自分の番号),2,follow対象」
+      sprintf(data, "%d,2,%d", userno, followno);   //「i(自分の番号),2,follow対象」
       sleep(1);                                           //て感じでdataに格納
-      if(followflag==0){
+
+      if(userno == followno){
+	printf("自分はフォローできません\n");
+      }
+      else if(followflag==0){
 	printf("user %dをフォロー\n", followno);
 	followflag=1;
-      }else{
+      }else if(followflag==1){
 	printf("user %dのフォローを解除\n", followno);
 	followflag=0;
       }
       break;
       
     case 9:
+      option = 0;
       sprintf(data, "%d%s", userno, ",9,");           //「i,9」をdataに格納
       sleep(1);                                       //そのあとbreakで抜け出す
       printf("Twitterを閉じます\n");

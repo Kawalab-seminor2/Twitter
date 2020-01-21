@@ -137,13 +137,13 @@ int main()          //メイン関数
             char *words1[3];                    //ツイート保存のためのポインタ配列
 
             words1[0]=strtok(data, ",");        //dataの1,1,を分割して
-            for(i=1; i<3; i++)                  //ツイートの内容を受け取る
-                words1[i]=strtok(NULL,",");
-
-                for(i=0; i<3; i++)
-                    printf("%s\n", words1[i]);
-
-
+	    for(i=1; i<3; i++)               //ツイートの内容を受け取る
+	      words1[i]=strtok(NULL,",");
+	    
+	    for(i=0; i<3; i++)
+	      printf("%s\n", words1[i]);
+	    
+	    
             printf("check : %s\n",words1[2]);   //words1[2]にツイート内容が入っている
 
             const char *tweetlen = words1[2];       //文字の長さ判断のため
@@ -224,7 +224,7 @@ int main()          //メイン関数
                 tweet2 = (char*)malloc(sizeof(char) * sizeof(words2));
                 strcpy(tweet2, words2[2]);
                 //sprintf(data, "%s%s", "user1 : ", tweet1);
-                sprintf(user2tweet, "%s%s", "user2 : ", tweet2);
+                sprintf(user2tweet, "user2 : %s", tweet2);
                 //sleep(1);
                 //printf("%s\n", data);
             }
@@ -241,7 +241,7 @@ int main()          //メイン関数
         
         else if (strncmp(data, "2,2,", 4) == 0) {   //ユーザ1と同じように
             printf("ユーザ2　フォロー処理\n");
-                if(follow2flag==0){
+                     if(follow2flag==0){
                 follow2flag=1;
                 printf("user 2 がuser 1 をフォロー\n");
                 sprintf(data, "%s%s", "r1r2,", "user 2 がuser 1 をフォロー\n");
