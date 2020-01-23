@@ -42,10 +42,15 @@ int kbhit(void)                         //入力があるとこの関数に入�
     return 0;
 }
 
+typedef struct followflag{//フォローフラグ用構造体
+  int followflag;
+  struct followflag *next;
+}FF;
+
 typedef struct user{ //ユーザ情報の管理用構造体
 	int userpid;
 	//ユーザリストごとにポインタリストの作成
-	int followflag=0;
+	FF followflag;
 	struct user *next;
 }USER;
 
@@ -55,19 +60,23 @@ typedef struct alltimeline{ //全体ツイート保存用
 	struct alltimeline *next;
 }TIMELINE; //usernumberで表示するユーザの選別を行えばよろしいのでは
 
-USER *head=NULL;
-USER *tail=NULL;
+FF *fhead=NULL;
+FF *ftail=NULL;
+USER *uhead=NULL;
+USER *utail=NULL;
+TIMELINE *thead=NULL;
+TIMELINE *ttail=NULL;
 
+FF *createFollowFlag(); //フォローフラグ管理用
 USER *createNewUser(int pid); //ユーザデータのノード作成
 TIMELINE *getAllTweet(int number, char tweet); //ユーザの全ツイート保存
-
 int getUserList(void); //ユーザ数数える関数
-void mFollowFlag(int followusernumber, int followerusernumber); //フォローフラグ管理用関数　ポインタリストでユーザごとに管理
+void mFollowFlag(int followusernumber, int followerusernumber,char *data); //フォローフラグ管理用関数　ポインタリストでユーザごとに管理
 
 int getUserList(void){
 	int number; //ユーザ数数える
 	USER *user;
-	user=head; //先頭からデータを見る
+	user=uhead; //先頭からデータを見る
 	while(1){
 		if(user->next!=NULL){ //作成済みの領域=その分ユーザがいる
 			number++;
@@ -79,10 +88,31 @@ int getUserList(void){
 	return number;
 }
 
-void mFollowFlag(int followusernumber, int followerusernumber){
+void mFollowFlag(int followusernumber, int followerusernumber,char *data){
 	//フォローフラグ用構造体再定義
 	//followerusernumberの位置までリストの場所移動
 	//その場所のuser->followflagを1にする or 0にする
+	int i;
+  	FF uFollowFlag;
+ 	USER followuser;
+  	uFollowFlag=fhead;  //先頭から見る
+  	followuser=uhead;  //こちらも同様
+  	for(i=1;i<=followusernumber;i++){
+    	followuser=followuser->next;  //フォロー側ユーザのところまで飛ぶ
+  	}
+  	for(i=1;i<=followusernumber;i++){
+    	uFollowFlag=uFollowFlag->next;  //フォローしたいユーザのフォローフラグまで飛ぶ
+  	}
+  	if(followflag->followflag==0){
+    	uFollowFlag->followflag=1;
+    	printf("user %d がuser %d をフォロー\n",followusernumber,followerusernumber);
+     	sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 をフォロー\n");
+  	}
+  	else{
+    	uFollowFlag->followflag=0;
+    	printf("user %d がuser %d のフォローを解\n",followusernumber,followerusernumber);
+    	sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 のフォローを解除\n");
+  	}
 }
 	
 /*int adduser(int pid);
@@ -114,10 +144,11 @@ int main()          //メイン関数
     int     userpid[2]={0,0};
     char    *oripid;
     char    *tweet1, *tweet2, *user1tweet, *user2tweet;
+    char userno; //char('0' + i)変換用
     USER userdata;
     TIMELINE tl;
-    userdata=head;
-    tl=head;
+    userdata=uhead;
+    tl=thead;
     //それぞれヘッドから見る必要あり
     
      printf("クライアントを起動してください\n");
@@ -161,7 +192,7 @@ int main()          //メイン関数
             }
             
             //headとtailが同じ値のとき最初のやつ追加
-            if(userdata->head==userdata->tail){
+            if(uhead==utail){
             	userdata=createNewUser(pid);
             	strcpy(data,k);
             	sleep(1);
@@ -171,7 +202,8 @@ int main()          //メイン関数
                 	userdata=createNewUser(pid);              //ユーザ登録
                 	//cliにユーザ番号通知
                 	//printf("register%d\n", userpid[0]);
-                	strcpy(data, k);              //ユーザk登録
+                	userno=char('0' + k);
+                	strcpy(data, userno);              //ユーザk登録
                 	sleep(1);
                 	break;
                 }
@@ -185,7 +217,8 @@ int main()          //メイン関数
     	whileで作った領域まで回して変数numberをインクリメント*/
     	number=getUserList();
        for(i=1;i<=number;i++){//ツイート、フォロー、通信切断処理を行うforループ
-        else if (strncmp(data, i,"1,", 4) == 0) {   //ユーザ1のツイート処理
+       	userno=char('0'+i);
+        if (strncmp(data, userno,"1,", 4) == 0) {   //ユーザ1のツイート処理
             printf("ユーザ1　ツイート処理\n");         
     		printf("ユーザ1 : %s\n",data);
             //strcpy(tmptweet, data);
@@ -238,34 +271,25 @@ int main()          //メイン関数
             }
         }
         
-        else if (strncmp(data, i,"2,", 4) == 0) {       //フォロー処理
+        else if (strncmp(data, userno,"2,", 4) == 0) {       //フォロー処理
         		/*どのユーザをフォローしたか判別する必要あり→フォローしたユーザの番号を引数にポインタリスト探索行う
         		ヘッダからスタート→指定されたユーザ番号分だけリストを動かす、followflagに0を格納→止まったリストの位置のfollowflagを1にする*/
         		/*followflagはwhile文で回してどのユーザをフォローしたか判別*/
-        		while(userdata!=NULL){
-              	 if(userdata->followflag==0){
-               		userdata->followflag=1;                  //1が2をフォローしてなかったらフラグを1に
-	                printf("user %d がuser %d をフォロー\n",i,j);
-    	            sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 をフォロー\n");
-    	            j++;
-        	        sleep(1);
-           		 }else{
-                	userdata->followflag=0;
-               		printf("user %d がuser %d のフォローを解除\n",i,j);
-                	sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 のフォローを解除\n");
-                	j++;
-                	sleep(1);
-                	}
-            }
-            j=1;
+   			char *words2[3]; //フォロー状態保存のためのポインタ配列
+   			words2[0]=strtok(data, ","); //dataの1,1,を分割して
+   			for(i=1; i<3; i++) //誰をフォローするかを把握
+     		words2[i]=strtok(NULL,",");
+   			j=atoi(words2[2]); //誰をフォローするかorリムーブするか
+   			printf("check : %s\n",words1[2]); //words1[2]にツイート内容が入っている
+   			mFollowFlag(i,j);
         }
         
-        else if (strncmp(data, i,"9,", 4) == 0) {   //切断処理
+        else if (strncmp(data, userno,"9,", 4) == 0) {   //切断処理
             printf("ユーザ%d　切断処理\n",i);
             userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ%d　切断\n",i);
         }
-        else if (strcmp(data, i) == 0) {          //登録中の時
+        else if (strcmp(data, userno) == 0) {          //登録中の時
             printf("ユーザ%d登録中\n",i);
         }
         sleep(1);
@@ -364,7 +388,22 @@ int main()          //メイン関数
  
     return 0;
 }
-
+FF *createFollowFlag(){
+  FF *pFollowFlag; //メモリ領域の確保
+  pFollowFlag=(FF *)malloc(sizeof(FF));
+  pFollowFlag->followflag=0;
+  if((fhead==NULL)&&(ftail==NULL)){
+    //リスト空のとき、新しいノードが先頭かつ末尾
+    fhead=pFollowFlag;
+    ftail=pFollowFlag;
+  }
+  else{
+    ftail->next=pFollowFlag;
+    ftail=ftail->next;
+  }
+  ftail->next=NULL;
+  return pFollowFlag;
+}
 
 USER *createNewUser(int pid){ //ノード作成用
 	USER *pNewUser;
@@ -372,16 +411,16 @@ USER *createNewUser(int pid){ //ノード作成用
 	pNewUser=(USER *)malloc(sizeof(USER));
 	/*各追加データ格納*/
 	pNewUser->userpid=pid;
-	if((head==NULL)&&(tail==NULL)){
+	if((uhead==NULL)&&(utail==NULL)){
 		//リスト空のとき、新しいノードが先頭かつ末尾
-		head=pNewUser;
-		tail=pNewUser;
+		uhead=pNewUser;
+		utail=pNewUser;
 	}
 	else{
-		tail->next=pNewUser;
-		tail=tail->next;
+		utail->next=pNewUser;
+		utail=utail->next;
 	}
-	tail->next=NULL;
+	utail->next=NULL;
 	return pNewUser;
 }
 
@@ -392,16 +431,16 @@ TIMELINE *getAllTweet(int number, char tweet){ //ツイート情報を得る
 	/*ツイートデータの格納*/
 	newTweet->usernumber=number;
 	strcpy(newTweet->tweet,tweet);
-	if((head==NULL)&&(tail==NULL)){
+	if((thead==NULL)&&(ttail==NULL)){
 		//リスト空のとき、新しいノードが先頭かつ末尾
-		head=newTweet;
-		tail=newTweet;
+		thead=newTweet;
+		ttail=newTweet;
 	}
 	else{
-		tail->next=newTweet;
-		tail=tail->next;
+		ttail->next=newTweet;
+		ttail=ttail->next;
 	}
-	tail->next=NULL;
+	ttail->next=NULL;
 	return newTweet;
 }
 
