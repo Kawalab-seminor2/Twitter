@@ -45,12 +45,15 @@ int main()  //メイン
 {
     int     shmid, option=1, followno=0;
     key_t   key;
-    char   *data, tweet[999];
+    char    *data, tweet[999];
     int     followflag=0;
-    char   sendpid[30];
+    char    sendpid[30];
     int     pid=0, userno=0;
     char    *check, rec[5], *rectwe;
     int     i;
+    int     ID, no=0;
+    char    PASS[16];
+    int     passError=0, idError=0, login=0;
     
     pid=getpid();                   //pid取得
     printf("pid=%d\n",pid);         //pid表示
@@ -83,8 +86,36 @@ int main()  //メイン
         printf(".");sleep(1);
           printf(".");sleep(1);
             printf(".\n");sleep(1);
-    userno=atoi(data);                      //受け取った文字列を数値に
-    sleep(1);
+
+	    while(1){
+	      printf("ユーザIDを入力してください(数字1桁) -> ");    //ID
+	      scanf("%d", &ID);
+	      printf("パスワードを入力してください(英数字) -> ");    //PASS
+	      scanf("%s", PASS);
+
+	      sprintf(data, "%s,%d,%s", "user", ID, PASS);
+	      //printf("%s\n",data);
+	      printf("認証中");           //この辺のsleepでサーバ側がdataを書き換える
+	       printf(".");sleep(1);
+	        printf(".");sleep(1);
+	         printf(".\n");sleep(1);
+
+		 if(passError==1){
+		   printf("パスワードが異なります\n");
+		 }else if(idError==1){
+		   printf("IDは数字１桁で入力してください\n");
+		 }else if(login==1){
+		   userno=no;                      //受け取った文字列を数値に
+		   sleep(1);
+		   printf("ユーザ%dでログインしました\n", userno);
+		   ID=0;
+		   PASS[0]='\0';
+		   break;
+		 }
+	    }
+
+	    
+	    
     printf("あなたはユーザ%dです\n", userno);       //ユーザ番号表示
 
     sprintf(rec, "%s%d", "r", userno);      //ツイート受け取り識別子作成
@@ -108,8 +139,7 @@ int main()  //メイン
 	if(option==1 || option==2 || option==9){    //選択肢の数値が来たらループ抜け出して
 	  break;                                  //switch文へ
 	}
-	printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-	printf("\n1:tweet 2:follow 9:exit -> ");
+	printf("選択肢の数値を入力して下さい -> ");     //選択肢の数値以外が入力されたら表示
       }
       
       if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -173,7 +203,6 @@ int main()  //メイン
       sleep(1);                                       //そのあとbreakで抜け出す
       printf("Twitterを閉じます\n");
       exit(1);
-      
     }    
  }
  

@@ -65,12 +65,16 @@ int main()          //メイン関数
     int     shmid, pid=0, tweet1len=0, tweet2len=0;
     int     follow1flag=0, follow2flag=0;
     key_t   key;
-    char   *data;
-    char	 tmp[140];
+    char    *data;
+    char    tmp[140];
     int     i, j;
     int     userpid[2]={0,0};
     char    *oripid;
     char    *tweet1, *tweet2, *user1tweet, *user2tweet;
+    int     ID, userID[9];
+    char    PASS, userPASS[9];
+    int     no, NO, login=0;
+    int     passError=0, idError=0;
     
      printf("クライアントを起動してください\n");
      
@@ -111,23 +115,68 @@ int main()          //メイン関数
     		       printf("受信したpid : %d\n", pid);
                 }
             }
-            
-            if(userpid[0]==0){
-                userpid[0]=pid;              //ユーザ1登録
-                //cliにユーザ番号通知
-                //printf("register%d\n", userpid[0]);
-                strcpy(data, "1");              //ユーザ1登録
-                sleep(1);
-                }
-                else{
-                userpid[1]=pid;             //ユーザ2登録
-                //cliにユーザ番号通知
-                //printf("register%d\n", userpid[1]);
-                strcpy(data, "2");            
-                sleep(1);
-            }
-    	}
-       
+	}
+	    
+	else if(strncmp(data, "user,", 5)==0){
+	  char *user[2];                    //ユーザ情報保存のためのポインタ配列
+            user[0]=strtok(data, ",");        //dataを分割して
+	    for(i=1; i<2; i++)               //ユーザ情報を受け取る
+	      user[i]=strtok(NULL,",");
+	    
+	    for(i=0; i<2; i++)
+	      printf("%s\n", user[i]);
+
+	    ID=atoi(user[0]);
+	    PASS=user[1];
+
+	    
+	      printf("data ok, ID=%d\n",ID);
+	  //printf("%s\n",data);
+	      idError=0; passError=0;
+	      NO=0; login=0;
+	      if(user[0]==ID){
+		printf("ID ok\n");
+		if(user[1]==PASS){
+		  printf("PASS ok\n");
+		  if(userpid[NO]==ID)
+		    userpid[NO]=pid;              //ユーザ認証
+		  else NO++;
+		  //cliにユーザ番号通知
+		  //printf("register%d\n", userpid[0]);
+		  no=NO;
+		  login=1;
+		  printf("ユーザ%dがログインしました\n", no);
+		  break;
+		}
+		else{
+		  passError=1;
+		  printf("PASS no\n");
+		  break;
+		}
+	      }
+	      else if(user[0]=='\0'){
+		printf("ID NULL\n");
+		userID[NO]=ID;
+		userPASS[NO]=PASS;
+		userpid[NO]=pid;              //ユーザ登録
+		//cliにユーザ番号通知
+		//printf("register%d\n", userpid[0]);
+		no=NO;
+		login=1;
+		printf("ユーザ%dに登録しました\n", no);
+	      }
+	      else if(ID<=0 || 10<=ID){
+		printf("ID 範囲外\n");
+		idError=1;
+		printf("idError=%d", idError);
+	      }else{
+		NO++;
+	      }
+	      sleep(1);
+	    }
+	
+	
+	
         else if (strncmp(data, "1,1,", 4) == 0) {   //ユーザ1のツイート処理
             printf("ユーザ1　ツイート処理\n");         
     		printf("ユーザ1 : %s\n",data);
@@ -180,12 +229,12 @@ int main()          //メイン関数
                 printf("user 1 がuser 2 をフォロー\n");
                 sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 をフォロー\n");
                 sleep(1);
-            }else{
+	       }else if(follow1flag==1){
                 follow1flag=0;
                 printf("user 1 がuser 2 のフォローを解除\n");
                 sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 のフォローを解除\n");
                 sleep(1);
-            }
+	       }
         }
         
         else if (strncmp(data, "1,9,", 4) == 0) {   //切断処理
