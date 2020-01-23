@@ -43,15 +43,14 @@ int kbhit(void)     //何か押したら入る関数
  
 int main()  //メイン
 {
-    int     shmid, option=0, followno=0;
+    int     shmid, option=1, followno=0;
     key_t   key;
     char   *data, tweet[999];
     int     followflag=0;
     char   sendpid[30];
     int     pid=0, userno=0;
     char    *check, rec[5], *rectwe;
-    int     i;
-    int power;
+    int     i,back;
     
     pid=getpid();                   //pid取得
     printf("pid=%d\n",pid);         //pid表示
@@ -90,29 +89,29 @@ int main()  //メイン
 
     sprintf(rec, "%s%d", "r", userno);      //ツイート受け取り識別子作成
                                             //自分がユーザ1ならr1というdataを受け取る
-    //printf("%s\n", rec);
+    printf("%s\n", rec);
 
  
 
  while(1){              //ここからがツイッターのメインの動作
-   
+    
     //自分のユーザ番号と選択肢の表示、この辺いじったらちゃんとツイート受け取り出来そう
     printf("user %d\n", userno);
-    printf("1:tweet 2:follow 9:exit\n");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
+    printf("1:tweet 2:follow 7:reply 9:exit\n");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
 
     while(1){       //選択肢やツイート受信のためのループ
      
-     if (kbhit()){//入力がある時この関数に入る
+//if (kbhit()){//入力がある時この関数に入る
     scanf("%d",&option);   //からの選択肢読み取り
-    getchar();  
- sleep(1);
-     }
-    if(option==1 || option==2 || option==9 ){//選択肢の数値が来たらループ抜け出して
+    getchar();
+    sleep(1);
+     
+    if(option==1 || option==2 || option==7 || option==9){    //選択肢の数値が来たらループ抜け出して
     	break;                                  //switch文へ
-    }
-    
-    printf("選択肢の数値を入力して下さい\n");//選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-   printf("option=%d\n",option);
+   // }
+   
+    printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
+    printf("option=%d\n",option);
     }
 
     if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -135,7 +134,6 @@ int main()  //メイン
     switch(option){        //選択肢の結果による処理
     case 1:
     //tweet
-      
     printf("Tweet : ");
     fgets(tweet, 999, stdin);   //ツイート入力
     //printf("%s\n",tweet);
@@ -164,6 +162,12 @@ int main()  //メイン
     }
     break;
     
+    case 7:
+    printf("何個前のツイートですか？");
+    scanf("%d",&back);
+    sprintf(data, "%d%s%d", userno, ",7,",back);  
+    break;
+    
     case 9:
     sprintf(data, "%d%s", userno, ",9,");           //「i,9」をdataに格納
     sleep(1);                                       //そのあとbreakで抜け出す
@@ -174,8 +178,8 @@ int main()  //メイン
 
 			if(option==9)
             break;
-      }  
-
+        
+}
  		
     /* dettach the segment to data space */
     if (shmdt(data) == -1){

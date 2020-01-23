@@ -102,17 +102,21 @@ int main()  //メイン
 
     while(1){       //選択肢やツイート受信のためのループ
      
-     if (kbhit()){//入力がある時この関数に入る
-    scanf("%d",&option);   //からの選択肢読み取り
-    getchar();  
+    if (kbhit()){//入力がある時この関数に入る
+       
+      
+    getchar();
+ printf("%d\n",option);
+    
  sleep(1);
-     }
+     
     if(option==1 || option==2 || option==9 ){//選択肢の数値が来たらループ抜け出して
+     
     	break;                                  //switch文へ
     }
     
     printf("選択肢の数値を入力して下さい\n");//選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-   printf("option=%d\n",option);
+   
     }
 
     if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -135,22 +139,24 @@ int main()  //メイン
     switch(option){        //選択肢の結果による処理
     case 1:
     //tweet
-      
+       option=0;
     printf("Tweet : ");
     fgets(tweet, 999, stdin);   //ツイート入力
     //printf("%s\n",tweet);
     char *s = strchr(tweet, '\n');  //改行文字を終端文字に
     if(s != NULL) *s='\0';
-    else while(1){printf("option=%d\n",option);
+    else while(1){
     	int c =getchar();
     	if(c == '\n' || c == EOF) break;
     	}
+   
     sprintf(data, "%d%s%s", userno, ",1,", tweet);  //「i(自分の番号),1,tweet文」
     sleep(1);                                       //て感じでdataに格納
    	break;
     	
     case 2:
     //follow
+       option=0;
     printf("フォローするユーザを指定して下さい(今回は1or2)\nフォロー済みの場合はフォローを解除します\n->user ");
     scanf("%d", &followno);
     sprintf(data, "%d%s%d", userno, ",2,", followno);   //「i(自分の番号),2,follow対象」
@@ -174,8 +180,8 @@ int main()  //メイン
 
 			if(option==9)
             break;
-      }  
-
+        
+}
  		
     /* dettach the segment to data space */
     if (shmdt(data) == -1){

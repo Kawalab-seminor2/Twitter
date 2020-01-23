@@ -65,16 +65,12 @@ int main()          //メイン関数
     int     shmid, pid=0, tweet1len=0, tweet2len=0;
     int     follow1flag=0, follow2flag=0;
     key_t   key;
-    char    *data;
-    char    tmp[140];
+    char   *data;
+    char	 tmp[140];
     int     i, j;
     int     userpid[2]={0,0};
     char    *oripid;
     char    *tweet1, *tweet2, *user1tweet, *user2tweet;
-    int     ID, userID[9];
-    char    PASS, userPASS[9];
-    int     no, NO, login=0;
-    int     passError=0, idError=0;
     
      printf("クライアントを起動してください\n");
      
@@ -115,68 +111,23 @@ int main()          //メイン関数
     		       printf("受信したpid : %d\n", pid);
                 }
             }
-	}
-	    
-	else if(strncmp(data, "user,", 5)==0){
-	  char *user[2];                    //ユーザ情報保存のためのポインタ配列
-            user[0]=strtok(data, ",");        //dataを分割して
-	    for(i=1; i<2; i++)               //ユーザ情報を受け取る
-	      user[i]=strtok(NULL,",");
-	    
-	    for(i=0; i<2; i++)
-	      printf("%s\n", user[i]);
-
-	    ID=atoi(user[0]);
-	    PASS=user[1];
-
-	    
-	      printf("data ok, ID=%d\n",ID);
-	  //printf("%s\n",data);
-	      idError=0; passError=0;
-	      NO=0; login=0;
-	      if(user[0]==ID){
-		printf("ID ok\n");
-		if(user[1]==PASS){
-		  printf("PASS ok\n");
-		  if(userpid[NO]==ID)
-		    userpid[NO]=pid;              //ユーザ認証
-		  else NO++;
-		  //cliにユーザ番号通知
-		  //printf("register%d\n", userpid[0]);
-		  no=NO;
-		  login=1;
-		  printf("ユーザ%dがログインしました\n", no);
-		  break;
-		}
-		else{
-		  passError=1;
-		  printf("PASS no\n");
-		  break;
-		}
-	      }
-	      else if(user[0]=='\0'){
-		printf("ID NULL\n");
-		userID[NO]=ID;
-		userPASS[NO]=PASS;
-		userpid[NO]=pid;              //ユーザ登録
-		//cliにユーザ番号通知
-		//printf("register%d\n", userpid[0]);
-		no=NO;
-		login=1;
-		printf("ユーザ%dに登録しました\n", no);
-	      }
-	      else if(ID<=0 || 10<=ID){
-		printf("ID 範囲外\n");
-		idError=1;
-		printf("idError=%d", idError);
-	      }else{
-		NO++;
-	      }
-	      sleep(1);
-	    }
-	
-	
-	
+            
+            if(userpid[0]==0){
+                userpid[0]=pid;              //ユーザ1登録
+                //cliにユーザ番号通知
+                //printf("register%d\n", userpid[0]);
+                strcpy(data, "1");              //ユーザ1登録
+                sleep(1);
+                }
+                else{
+                userpid[1]=pid;             //ユーザ2登録
+                //cliにユーザ番号通知
+                //printf("register%d\n", userpid[1]);
+                strcpy(data, "2");            
+                sleep(1);
+            }
+    	}
+       
         else if (strncmp(data, "1,1,", 4) == 0) {   //ユーザ1のツイート処理
             printf("ユーザ1　ツイート処理\n");         
     		printf("ユーザ1 : %s\n",data);
@@ -196,24 +147,29 @@ int main()          //メイン関数
             printf("check : %s\n",words1[2]);   //words1[2]にツイート内容が入っている
 
             const char *tweetlen = words1[2];       //文字の長さ判断のため
-            tweet1len = u8len(tweetlen);                    //UTF-8の場合はこちらを使用
+            tweet1len = u8len(tweetlen); 
+                               //UTF-8の場合はこちらを使用
+	        
 	        printf("文字数 = %d\n", tweet1len);
-
             if(tweet1len > 140){
+            user1tweet = (char*)malloc(sizeof(char) * sizeof(words1));
                 //sprintf(data, "%s", "user1 : ツイートは140字以内で入力してください");
-                sprintf(user1tweet, "%s", "user1 : ツイートの制限文字数(140文字)を超えました");
+              sprintf(user1tweet, "%s", "user1 : ツイートの制限文字数(140文字)を超えました");
                 //sleep(1);
                 //printf("%s\n", data);
-            }else{
+                
+            }
+            else{  printf("monndai  90\n");
                 tweet1 = (char*)malloc(sizeof(char) * sizeof(words1));
+               user1tweet = (char*)malloc(sizeof(char) * sizeof(words1));
                 strcpy(tweet1, words1[2]);
                 //sprintf(data, "%s%s", "user1 : ", tweet1);
-                sprintf(user1tweet, "user1 : %s", tweet1);
+             sprintf(user1tweet, "user1 : %s", tweet1);
                 //sleep(1);
                 //printf("%s\n", data);
+                free(tweet1);
             }
        	
-
             if(follow2flag==1){             //ツイート受け取り識別子を付加してdataに格納
                 sprintf(data, "%s%s", "r1r2,", user1tweet);
                 sleep(1);
@@ -229,12 +185,12 @@ int main()          //メイン関数
                 printf("user 1 がuser 2 をフォロー\n");
                 sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 をフォロー\n");
                 sleep(1);
-	       }else if(follow1flag==1){
+            }else{
                 follow1flag=0;
                 printf("user 1 がuser 2 のフォローを解除\n");
                 sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 のフォローを解除\n");
                 sleep(1);
-	       }
+            }
         }
         
         else if (strncmp(data, "1,9,", 4) == 0) {   //切断処理
@@ -266,11 +222,13 @@ int main()          //メイン関数
             
             if(tweet2len > 140){
                 //sprintf(data, "%s", "user1 : ツイートは140字以内で入力してください");
-                sprintf(user2tweet, "%s", "user2 : ツイートの制限文字数(140文字)を超えました");
+                user2tweet = (char*)malloc(sizeof(char) * sizeof(words2)); 
+               sprintf(user2tweet, "%s", "user2 : ツイートの制限文字数(140文字)を超えました");
                 //sleep(1);
                 //printf("%s\n", data);
             }else{
                 tweet2 = (char*)malloc(sizeof(char) * sizeof(words2));
+              user2tweet = (char*)malloc(sizeof(char) * sizeof(words2)); 
                 strcpy(tweet2, words2[2]);
                 //sprintf(data, "%s%s", "user1 : ", tweet1);
                 sprintf(user2tweet, "user2 : %s", tweet2);
@@ -302,7 +260,11 @@ int main()          //メイン関数
                 sleep(1);
             }
         }
-        
+        else if(strncmp(data,"1,7,",4) == 0) {
+        printf("user1が");
+        printf("%s個前のツイート",strtok(data,"1,7,"));
+        printf("に対してre-plyを行いました\n");
+        }
         else if (strncmp(data, "2,9,", 4) == 0) {   //ユーザ1と同じように
             printf("ユーザ2　切断処理\n");
             userpid[1]=0;
