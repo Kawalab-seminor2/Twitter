@@ -13,6 +13,25 @@
 #include <fcntl.h>
 
 #define SHMSZ     512
+
+typedef struct {
+char *no;
+char *call;
+char *tweet;
+int flag;
+int re;
+} Dada;
+ 
+// 一括代入用の関数
+Dada init(char *no, char *call, char *tweet, int flag,int re) {
+Dada d;
+d.no=no;
+d.call=call;
+d.tweet=tweet;
+d.flag=flag;
+d.re=re;
+return d;
+}
 //実行するプログラムと同じパスにshm.datをいれておくか、サーバの起動時に共有メモリのためのファイルを作成し、サーバ切断の時にファイルを消す手段もある
 int kbhit(void)     //何か押したら入る関数
 {
@@ -41,17 +60,19 @@ int kbhit(void)     //何か押したら入る関数
 }
 
  
-int main()  //メイン
+int main()  //メイnn
 {
-    int     shmid, option=1, followno=0;
-    key_t   key;
+    int     shmid, option=0, followno=0,key;
+   
     char   *data, tweet[999];
     int     followflag=0;
     char   sendpid[30];
     int     pid=0, userno=0;
     char    *check, rec[5], *rectwe;
-    int     i,back;
-    
+    int     i;
+     int  t1count,t2count;
+    char *log;
+    char *nal,*rep;
     pid=getpid();                   //pid取得
     printf("pid=%d\n",pid);         //pid表示
  
@@ -89,46 +110,50 @@ int main()  //メイン
 
     sprintf(rec, "%s%d", "r", userno);      //ツイート受け取り識別子作成
                                             //自分がユーザ1ならr1というdataを受け取る
-    printf("%s\n", rec);
-
+    //printf("%s\n", rec);
  
 
  while(1){              //ここからがツイッターのメインの動作
     
     //自分のユーザ番号と選択肢の表示、この辺いじったらちゃんとツイート受け取り出来そう
     printf("user %d\n", userno);
-    printf("1:tweet 2:follow 7:reply 9:exit\n");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
-
+    printf("1:tweet 2:follow 7:retweet 8:reply 9:exit\n");    //↑ユーザがツイート表示状態になっていないとフォローしたユーザのツイートは自動で表示されない、プログラムの順番変えたりしたら行けるかも
+     
     while(1){       //選択肢やツイート受信のためのループ
-     
-//if (kbhit()){//入力がある時この関数に入る
-    scanf("%d",&option);   //からの選択肢読み取り
-    getchar();
-    sleep(1);
-     
-    if(option==1 || option==2 || option==7 || option==9){    //選択肢の数値が来たらループ抜け出して
-    	break;                                  //switch文へ
-   // }
-   
-    printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
-    printf("option=%d\n",option);
-    }
-
-    if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
-    //if (strncmp(data, "r1,", 3) == 0) {    
-		//printf("%s\n",data);
-        //sleep(1);
+         // printf("%s\n",data);
+          if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
+             //if (strncmp(data, "r1,", 3) == 0) {
+                 //printf("%s\n",data);
+                 //sleep(1);
+             //}
+                 rectwe=strtok(data, ",");               //ここからdata分割
+                     
+                     while(rectwe != NULL) {
+                        rectwe = strtok(NULL, ",");
+                         if(rectwe != NULL) {
+                            printf("%s\n", rectwe);      //分割した結果を表示
+                         }                               //user 1 :～みたいな感じの表示
+                     }
+                 
+             }
         
-        rectwe=strtok(data, ",");               //ここからdata分割
-            
-            while(rectwe != NULL) {
-               rectwe = strtok(NULL, ",");
-                if(rectwe != NULL) {
-    		       printf("%s\n", rectwe);      //分割した結果を表示
-                }                               //user 1 :～みたいな感じの表示
-            }
+  if (kbhit()){           //入力がある時この関数に入る
+    scanf("%d", &option);   //からの選択肢読み取り
+    sleep(1);
+        getchar();
+      printf("%s",data);
     
+    if(option==1 || option==2 || option==7|| option==8||option==9){    //選択肢の数値が来たらループ抜け出して
+    	break;                                  //switch文へ
     }
+    printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
+   
+  
+  }
+
+     
+     
+   
     }
     
     switch(option){        //選択肢の結果による処理
@@ -139,7 +164,7 @@ int main()  //メイン
     //printf("%s\n",tweet);
     char *s = strchr(tweet, '\n');  //改行文字を終端文字に
     if(s != NULL) *s='\0';
-    else while(1){printf("option=%d\n",option);
+    else while(1){
     	int c =getchar();
     	if(c == '\n' || c == EOF) break;
     	}
@@ -161,26 +186,51 @@ int main()  //メイン
     followflag=0;
     }
     break;
-    
-    case 7:
-    printf("何個前のツイートですか？");
-    scanf("%d",&back);
-    sprintf(data, "%d%s%d", userno, ",7,",back);  
-    break;
-    
-    case 9:
+            
+        case 7:
+            
+            log = (char *)malloc(140);
+            printf("何個前のツイートを表示？");
+            scanf("%s",log);
+           
+            sprintf(data, "%d%s%s", userno, ",7,",log);
+            
+            sleep(3);
+            
+            printf("これをリツイート→%s\n",strtok(data,"1."));
+            free(log);
+            break;
+            
+        case 8:
+            nal = (char *)malloc(140);
+            rep = (char *)malloc(140);
+            printf("どのようなツイートですか？");
+            scanf("%s",nal);
+            printf("replyの内容を");
+            scanf("%s",rep);
+        sprintf(data, "%d%s%s,%s", userno, ",8,",nal,rep);
+            
+            sleep(3);
+            
+            printf("reply→%s\n",data);
+            free(nal);
+            free(rep);
+            break;
+        case 9:
     sprintf(data, "%d%s", userno, ",9,");           //「i,9」をdataに格納
     sleep(1);                                       //そのあとbreakで抜け出す
     printf("Twitterを閉じます\n");
     	break;
  		
- 		}
+    }
 
 			if(option==9)
             break;
         
 }
  		
+
+
     /* dettach the segment to data space */
     if (shmdt(data) == -1){
         perror("shmdt");
