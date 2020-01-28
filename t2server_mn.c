@@ -1,3 +1,6 @@
+//2020 1/28最新版
+//複数ユーザ認証(操作できるのは5つまで)、ツイートの保存に対応
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -42,120 +45,14 @@ int kbhit(void)                         //入力があるとこの関数に入�
     return 0;
 }
 
-typedef struct followflag{//フォローフラグ用構造体
-  int followflag;
-  struct followflag *next;
-}FF;
-
-typedef struct user{ //ユーザ情報の管理用構造体
-	int userpid;
-	//ユーザリストごとにポインタリストの作成
-	FF followflag;
-	struct user *next;
-}USER;
-
-typedef struct alltimeline{ //全体ツイート保存用
-	char tweet;
-	char usernumber;
-	struct alltimeline *next;
-}TIMELINE; //usernumberで表示するユーザの選別を行えばよろしいのでは
-
-FF *fhead=NULL;
-FF *ftail=NULL;
-USER *uhead=NULL;
-USER *utail=NULL;
-TIMELINE *thead=NULL;
-TIMELINE *ttail=NULL;
-
-FF *createFollowFlag(); //フォローフラグ管理用
-USER *createNewUser(int pid); //ユーザデータのノード作成
-void getAllTweet(char *number, char *tweet); //ユーザの全ツイート保存
-int getUserList(void); //ユーザ数数える関数
-void mFollowFlag(int followusernumber, int followerusernumber,char *data); //フォローフラグ管理用関数　ポインタリストでユーザごとに管理
-
-int getUserList(void){
-	int number=0; //ユーザ数数える
-	USER *user;
-	user=uhead; //先頭からデータを見る
-	while(user->next!=NULL) //次のデータが入ってないところまで数える
-		number++;
-	return number;
-}
-
-//void getAllTweet(char *number, char *tweet){ //ツイート情報を得る
-//	TIMELINE *newTweet;
-//	/*メモリ領域確保*/
-//	newTweet=(TIMELINE *)malloc(sizeof(TIMELINE));
-//	/*ツイートデータの格納*/
-//	newTweet->tweet = tweet;
-//	printf("%s\n",tweet);
-//	newTweet->usernumber = number;
-//	if((thead==NULL)&&(ttail==NULL)){
-//		//リスト空のとき、新しいノードが先頭かつ末尾
-//		thead=newTweet;
-//		ttail=newTweet;
-//	}
-//	else{
-//		ttail->next=newTweet;
-//		ttail=ttail->next;
-//	}
-//	ttail->next=NULL;
-//}
-
-void mFollowFlag(int followusernumber, int followerusernumber,char *data){
-	//フォローフラグ用構造体再定義
-	//followerusernumberの位置までリストの場所移動
-	//その場所のuser->followflagを1にする or 0にする
-	int i;
-  	FF *uFollowFlag;
- 	USER *followuser;
-  	uFollowFlag=fhead;  //先頭から見る
-  	followuser=uhead;  //こちらも同様
-  	for(i=1;i<=followusernumber;i++){
-    	followuser=followuser->next;  //フォロー側ユーザのところまで飛ぶ
-  	}
-  	for(i=1;i<=followusernumber;i++){
-    	uFollowFlag=uFollowFlag->next;  //フォローしたいユーザのフォローフラグまで飛ぶ
-  	}
-  	if(uFollowFlag->followflag==0){
-    	uFollowFlag->followflag=1;
-    	printf("user %d がuser %d をフォロー\n",followusernumber,followerusernumber);
-     	sprintf(data, "r%dr%d%s", followusernumber,followerusernumber, "user 1 がuser 2 をフォロー\n");
-  	}
-  	else{
-    	uFollowFlag->followflag=0;
-    	printf("user %d がuser %d のフォローを解\n",followusernumber,followerusernumber);
-    	sprintf(data, "%s%s", "r1r2,", "user 1 がuser 2 のフォローを解除\n");
-  	}
-}
-
-/*int adduser(int pid);
-
-int adduser(int pid){
-    int i;
-    int user[2];
-
-    for(i=0; i<2; i++){
-        if(user[i]==0){
-            user[i]=pid;
-            return user[i];
-        }
-        else
-            user[i+1]=pid;
-            return user[i+1];
-    }
-
-}*/
-
 int main()          //メイン関数
 {
     int     shmid, pid=0, tweet1len=0, tweet2len=0,tweet3len=0,tweet4len=0,tweet5len=0;
-    int     follow1flag=0, follow2flag=0;
     key_t   key;
     char   *data;
     char	 tmp[140];
+    int		userpid[100];
     int     i, j,k=1,number=0,ntmp; //iはforループ用、jはwhileループ用kはユーザナンバー決定用、numberはユーザの数
-    char *u1info,*u2info,*u3info,*u4info,*u5info; //,より前はid,あとはパスワード
     char    *oripid;
     char    *tweet1, *tweet2,*tweet3,*tweet4,*tweet5,*user1tweet, *user2tweet,*user3tweet,*user4tweet,*user5tweet;
     char userno1[10],userno2[10]; //1は承認用、2はツイート用
@@ -164,10 +61,12 @@ int main()          //メイン関数
     char *u1t="1.",*u2t="2.",*u3t="3.",*u4t="4.",*u5t="5.";
     int u1ff[5]={0,0,0,0,0},u2ff[5]={0,0,0,0,0},u3ff[5]={0,0,0,0,0},u4ff[5]={0,0,0,0,0},u5ff[5]={0,0,0,0,0};
     int tweetnumber=0;
-    USER *userdata,*utop;
-    TIMELINE *tl;
-    FF *fflag;
+   
     //それぞれヘッドから見る必要あり
+    
+    for(i=0;i<100;i++){
+    	userpid[i]=0;
+    }
 
      printf("クライアントを起動してください\n");
 
@@ -208,105 +107,21 @@ int main()          //メイン関数
     		       printf("受信したpid : %d\n", pid);
                 }
             }
-
+			
             //headとtailが同じ値のとき最初のやつ追加
-            if(uhead==NULL){
-            	userdata=createNewUser(pid);
-            	utop=userdata;
-            	sleep(1);
-            	sleep(1);
-            	sleep(1);
-            	sleep(1);
-            	sleep(1);
-            	strcpy(u1info,data);
-		/*if(u1id==NULL){
-		  strcpy(u1id,data);
-		  sleep(1);
-		  strcpy(u1ps,data);
-		  printf("ユーザ1登録\n");
-		}*/
-		/*else{
-		  if(strcmp(u1id,data)!=0)
-                  printf("idが違います\n");
-		  else if(strcmp(u1ps,data)!=0)
-                  printf("パスワードが違います\n");
-		}*/
-            	sprintf(data,"%s","1");
+            for(i=0;i<=number;i++){
+            	if(userpid[i]==0){
+            		userpid[i]=1;
+            		sprintf(data,"%d",i+1);
+            		printf("ユーザ%dがログイン\n",i+1);
+            		sleep(1);
+            		break;
+            	}
+            }
+            if(i==number){
             	number++;
-            	printf("ユーザ1登録\n");
-            	sleep(1);
             }
-            else{
-            	while(userdata!=NULL){ //最初に1つ入ってないとダメでは?
-            		if(userdata->next==NULL){
-            			number++;
-                		userdata=createNewUser(pid);              //ユーザ登録
-                		if(number==2){
-                			sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				strcpy(u2info,data);
-                			strcpy(data,"2");
-                			printf("ユーザ2登録\n");
-            				sleep(1);
-            				break;
-                		}
-                		else if(number==3){
-                			sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				strcpy(u3info,data);
-                			strcpy(data,"3");
-                			printf("ユーザ3登録\n");
-                			sleep(1);
-                			break;
-                		}
-                		else if(number==4){
-                			sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				strcpy(u4info,data);
-                			strcpy(data,"4");
-                			printf("ユーザ4登録\n");
-                			sleep(1);
-                			break;
-                		}
-                		else if(number==5){
-                			sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				sleep(1);
-            				strcpy(u5info,data);
-                			strcpy(data,"5");
-                			printf("ユーザ5登録\n");
-                			sleep(1);
-                			break;
-                		}
-                		else{
-                			userdata=utop;
-                			while(1){
-                				if(userdata->userpid==0){
-                					userdata->userpid=1;
-                					break;
-                				}
-                				else{
-                					userdata=userdata->next;
-                				}
-                			}
-                		}
-                	}
-                	else{
-                		number++;
-                	}
-                }
-            }
+            printf("今の登録ユーザ数 : %d\n",number);
     	}
         else if (strncmp(data, "1,1,", 4) == 0) {   //ユーザ1のツイート処理
             printf("ユーザ1　ツイート処理\n");
@@ -398,7 +213,8 @@ int main()          //メイン関数
 
         else if (strncmp(data, "1,9,", 4) == 0) {   //切断処理
             printf("ユーザ1　切断処理\n");
-            userdata->userpid=0;                          //pid情報を削除
+            userpid[0]=0;
+            //userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ1　切断\n");
         }
         else if (strcmp(data, "1") == 0) {          //登録中の時
@@ -491,7 +307,8 @@ int main()          //メイン関数
 
         else if (strncmp(data, "2,9,", 4) == 0) {   //切断処理
             printf("ユーザ2　切断処理\n");
-            userdata->userpid=0;                          //pid情報を削除
+            userpid[1]=0;
+            //userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ2　切断\n");
         }
         else if (strcmp(data, "2") == 0) {          //登録中の時
@@ -584,7 +401,8 @@ int main()          //メイン関数
 
         else if (strncmp(data, "3,9,", 4) == 0) {   //切断処理
             printf("ユーザ3　切断処理\n");
-            userdata->userpid=0;                          //pid情報を削除
+            userpid[2]=0;
+            //userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ3　切断\n");
         }
         else if (strcmp(data, "3") == 0) {          //登録中の時
@@ -676,7 +494,8 @@ int main()          //メイン関数
 
         else if (strncmp(data, "4,9,", 4) == 0) {   //切断処理
             printf("ユーザ4　切断処理\n");
-            userdata->userpid=0;                          //pid情報を削除
+            userpid[3]=0;
+            //userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ4　切断\n");
         }
         else if (strcmp(data, "4") == 0) {          //登録中の時
@@ -768,7 +587,8 @@ int main()          //メイン関数
 
         else if (strncmp(data, "5,9,", 4) == 0) {   //切断処理
             printf("ユーザ5　切断処理\n");
-            userdata->userpid=0;                          //pid情報を削除
+            userpid[4]=0;
+            //userdata->userpid=0;                          //pid情報を削除
             printf("ユーザ5　切断\n");
         }
         else if (strcmp(data, "5") == 0) {          //登録中の時
@@ -793,43 +613,6 @@ int main()          //メイン関数
 
     return 0;
 }
-FF *createFollowFlag(){
-  FF *pFollowFlag; //メモリ領域の確保
-  pFollowFlag=(FF *)malloc(sizeof(FF));
-  pFollowFlag->followflag=0;
-  if((fhead==NULL)&&(ftail==NULL)){
-    //リスト空のとき、新しいノードが先頭かつ末尾
-    fhead=pFollowFlag;
-    ftail=pFollowFlag;
-  }
-  else{
-    ftail->next=pFollowFlag;
-    ftail=ftail->next;
-  }
-  ftail->next=NULL;
-  return pFollowFlag;
-}
-
-USER *createNewUser(int pid){ //ノード作成用
-	USER *pNewUser;
-	/*メモリ領域確保*/
-	pNewUser=(USER *)malloc(sizeof(USER));
-	/*各追加データ格納*/
-	pNewUser->userpid=pid;
-	if((uhead==NULL)&&(utail==NULL)){
-		//リスト空のとき、新しいノードが先頭かつ末尾
-		uhead=pNewUser;
-		utail=pNewUser;
-	}
-	else{
-		utail->next=pNewUser;
-		utail=utail->next;
-	}
-	utail->next=NULL;
-	return pNewUser;
-}
-
-
 
 //文字数カウント関数(日本語も英語も1文字ずつでカウントさせる)
 //UTF-8の場合はこちらを使用

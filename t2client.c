@@ -46,7 +46,7 @@ int main()  //メイン
     int     shmid, option=0, followno=0;
     key_t   key;
     char   *data, tweet[999];
-    int     followflag=0;
+    int     followflag[6]={0,0,0,0,0,0};
     char   sendpid[30];
     int     pid=0, userno=0;
     char    *check, rec[5], *rectwe;
@@ -105,10 +105,10 @@ int main()  //メイン
     getchar();
     sleep(1);
     
-    if(option==1 || option==2 || option==9)   //選択肢の数値が来たらループ抜け出して
+    if(option==1 || option==2 || option==9){    //選択肢の数値が来たらループ抜け出して
     	break;                                  //switch文へ
-    else
-    	printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
+    }
+    printf("選択肢の数値を入力して下さい\n");     //選択肢の数値以外が入力されたら表示、数字以外が入力されたら選択肢1に入ってしまう。(文字コードか何かの問題？)
     }
 
     if(strstr(data, rec)!=NULL){                //自分の受け取り識別子を含むdataを受け取ると表示
@@ -126,8 +126,8 @@ int main()  //メイン
             }
     
     }
-    
     }
+    //ツイート受信したときにフォローしてるユーザのツイートを保存する
     
     switch(option){        //選択肢の結果による処理
     case 1:
@@ -151,12 +151,13 @@ int main()  //メイン
     scanf("%d", &followno);
     sprintf(data, "%d%s%d", userno, ",2,", followno);   //「i(自分の番号),2,follow対象」
     sleep(1);                                           //て感じでdataに格納
-    if(followflag==0){
+    if(followflag[followno-1]==0){
     printf("user %dをフォロー\n", followno);
-    followflag=1;
-    }else{
+    followflag[followno-1]=1;
+    printf("%d\n",followno);
+    }else if(followflag[followno-1]==1){
     printf("user %dのフォローを解除\n", followno);
-    followflag=0;
+    followflag[followno-1]=0;
     }
     break;
     
