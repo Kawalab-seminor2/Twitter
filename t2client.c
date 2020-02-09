@@ -48,6 +48,7 @@ int kbhit(void)     //何か押したら入る関数
 
 int main()  //メイン
 {
+<<<<<<< HEAD
     int   shmid, option=0, followno=0;
     key_t key;
     char  *data, tweet[999];
@@ -61,6 +62,22 @@ int main()  //メイン
     int   t1count,t2count;
     char  *log;
     char  *nal,*rep;
+=======
+    int     shmid, option=0, followno=0;
+    key_t   key;
+    char   *data, tweet[999];
+    int     followflag[6]={0,0,0,0,0,0};
+    char   sendpid[30];
+    int     pid=0, userno=0;
+    char    *check, rec[5], *rectwe;
+    int     i;
+    int     ID, no=0;
+    char    PASS[16];
+    int     passError=0, idError=0, login=0;
+    int  t1count,t2count;
+    char *log,*use;
+    char *nal,*rep;
+>>>>>>> b8557ec5f8e3a4e2ef513c3f67876ffa4488dd57
 
     pid=getpid();                   //pid取得
     printf("pid=%d\n",pid);         //pid表示
@@ -263,18 +280,25 @@ int main()  //メイン
     break;
 
     case 7:
-
-           log = (char *)malloc(140);
-           printf("何個前のツイートを表示？");
-           scanf("%s",log);
-
-           sprintf(data, "%d%s%s", userno, ",7,",log);
-
-           sleep(3);
-
-           printf("これをリツイート→%s\n",strtok(data,"1."));
-           free(log);
-           break;
+    sprintf(data, "%d%s", userno, ",sevensub,");
+    sleep(1);
+    if(0!=strncmp(data,"0",1)){
+        printf("No data\n");
+        break;
+    }
+    printf("ツイート番号  ユーザ名．ツイート内容\n%s",data);
+    log = (char *)malloc(200);
+    printf("何番のツイートを表示？");
+    scanf("%s",log);
+     sprintf(data, "%d%s%s", userno, ",7,",log);
+    sleep(1);
+    printf("これをリツイート→%s\n",data);
+    free(log);
+    use = (char *)malloc(200);
+    strcpy(use,data);
+     sprintf(data, "%d%s%s", userno, ",1,", use);  //「i(自分の番号),1,tweet文」
+       sleep(1);                                       //て感じでdataに格納
+    break;
 
        case 8:
            nal = (char *)malloc(140);
