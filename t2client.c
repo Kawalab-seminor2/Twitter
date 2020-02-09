@@ -67,7 +67,7 @@ int main()  //メイン
     printf("pid=%d\n",pid);         //pid表示
 
     //共有メモリの設定
-    if ((key = ftok("shm.dat.txt", 'R')) == -1) {
+    if ((key = ftok("shm.dat", 'R')) == -1) {
         perror("ftok");
         exit(1);
     }

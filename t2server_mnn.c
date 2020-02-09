@@ -81,7 +81,7 @@ int main()          //メイン関数
      printf("クライアントを起動してください\n");
 
     //共有メモリ設定
-    if ((key = ftok("shm.dat.txt", 'R')) == -1) {
+    if ((key = ftok("shm.dat", 'R')) == -1) {
         perror("ftok");
         exit(1);
     }
