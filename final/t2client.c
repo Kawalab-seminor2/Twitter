@@ -120,8 +120,6 @@ int main()  //メイン
 
 			 if(strcmp(data, "22")==0){
 			   printf("このIDは使用できません\n");
-			 }else if(strcmp(data, "33")==0){
-			   printf("sign upしてください\n");
 			 }else{
 			   char *user[2];                    //ユーザ情報保存のためのポインタ配列
 			   user[0]=strtok(data, ",");        //dataを分割して
@@ -159,6 +157,8 @@ int main()  //メイン
 		    
 			 if(strcmp(data, "11")==0){
 			   printf("パスワードが異なります\n");
+			 }else if(strcmp(data, "33")==0){
+			   printf("sign upしてください\n");
 			 }else{
 			   char *user[2];                    //ユーザ情報保存のためのポインタ配列
 			   user[0]=strtok(data, ",");        //dataを分割して

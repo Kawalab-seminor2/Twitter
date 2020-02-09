@@ -73,11 +73,6 @@ int main()          //メイン関数
     	userpid[i]=0;
     }
 
-    for(i=0;i<9;i++){
-    	userPASS[i]="0";
-	PASS[i]="0";
-    }
-
      printf("クライアントを起動してください\n");
 
     //共有メモリ設定
@@ -200,8 +195,9 @@ int main()          //メイン関数
 		break;
 	      }
 	    }else{
-	      printf("No data");
+	      printf("No data\n");
 	      sprintf(data, "33");
+	      break;
 	    }
 	  }
 	  for(i=0; i<=id; i++)
