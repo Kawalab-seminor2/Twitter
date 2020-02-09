@@ -60,14 +60,14 @@ int main()  //メイン
     char    PASS[16];
     int     passError=0, idError=0, login=0;
     int  t1count,t2count;
-    char *log;
+    char *log,*use;
     char *nal,*rep;
 
     pid=getpid();                   //pid取得
     printf("pid=%d\n",pid);         //pid表示
 
     //共有メモリの設定
-    if ((key = ftok("shm.dat", 'R')) == -1) {
+    if ((key = ftok("shm.dat.txt", 'R')) == -1) {
         perror("ftok");
         exit(1);
     }
@@ -198,18 +198,25 @@ int main()  //メイン
     break;
 
     case 7:
-
-           log = (char *)malloc(140);
-           printf("何個前のツイートを表示？");
-           scanf("%s",log);
-
-           sprintf(data, "%d%s%s", userno, ",7,",log);
-
-           sleep(3);
-
-           printf("これをリツイート→%s\n",strtok(data,"1."));
-           free(log);
-           break;
+    sprintf(data, "%d%s", userno, ",sevensub,");
+    sleep(1);
+    if(0!=strncmp(data,"0",1)){
+        printf("No data\n");
+        break;
+    }
+    printf("ツイート番号  ユーザ名．ツイート内容\n%s",data);
+    log = (char *)malloc(200);
+    printf("何番のツイートを表示？");
+    scanf("%s",log);
+     sprintf(data, "%d%s%s", userno, ",7,",log);
+    sleep(1);
+    printf("これをリツイート→%s\n",data);
+    free(log);
+    use = (char *)malloc(200);
+    strcpy(use,data);
+     sprintf(data, "%d%s%s", userno, ",1,", use);  //「i(自分の番号),1,tweet文」
+       sleep(1);                                       //て感じでdataに格納
+    break;
 
        case 8:
            nal = (char *)malloc(140);

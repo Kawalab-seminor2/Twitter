@@ -62,7 +62,7 @@ int main()          //メイン関数
     char *u1t="1.",*u2t="2.",*u3t="3.",*u4t="4.",*u5t="5.";
     int u1ff[5]={0,0,0,0,0},u2ff[5]={0,0,0,0,0},u3ff[5]={0,0,0,0,0},u4ff[5]={0,0,0,0,0},u5ff[5]={0,0,0,0,0};
     int tweetnumber=0;
-    char *log,*log2,*kesin;
+    char *log,*log2,*kesin,*use,*c,*tnd;
     int high;
     int b,o;
     char yoritweet[20][100]={};
@@ -81,7 +81,7 @@ int main()          //メイン関数
      printf("クライアントを起動してください\n");
 
     //共有メモリ設定
-    if ((key = ftok("shm.dat", 'R')) == -1) {
+    if ((key = ftok("shm.dat.txt", 'R')) == -1) {
         perror("ftok");
         exit(1);
     }
@@ -378,51 +378,51 @@ int main()          //メイン関数
 				printf("ユーザ2がユーザ%dをリムーブ\n",j);
 			}
         }
-        else if(strncmp(data,"2,7,",4)==0){
-            b=0;
-            log=strtok(data,"2,7,");
-           high=(int)(*log)-48;
-
+     else if(strncmp(data,"2,7,",4)==0){
+        b=0;
+              log=strtok(data,"2,7,");
+             high=atoi(log);
            for(i=0;i<tweetnumber;i++){
-           if(u2ff[1]==0||u2ff[1]==1){
-           if(strncmp(alltweet[i], "2.", 2)==0){
-           kesin=strtok(alltweet[i],"2.");
-      sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u2ff[0]==1){
-           if(strncmp(alltweet[i], "1.", 2)==0){
-            kesin=strtok(alltweet[i],"1.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u2ff[2]==1){
-           if(strncmp(alltweet[i], "3.", 2)==0){
-            kesin=strtok(alltweet[i],"3.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u2ff[3]==1){
-           if(strncmp(alltweet[i], "4.", 2)==0){
-            kesin=strtok(alltweet[i],"4.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u2ff[4]==1){
-           if(strncmp(alltweet[i], "5.", 2)==0){
-            kesin=strtok(alltweet[i],"5.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
+                 if(u2ff[0]==1){
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                 kesin=strtok(alltweet[i],"1.");
+            sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u2ff[1]==1||u2ff[1]==0){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                  kesin=strtok(alltweet[i],"2.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u2ff[2]==1){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                  kesin=strtok(alltweet[i],"3.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u2ff[3]==1){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                  kesin=strtok(alltweet[i],"4.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u2ff[4]==1){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                  kesin=strtok(alltweet[i],"5.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                }
+        sprintf(data,"%s",yoritweet[high]);
+            
+              sleep(1);
           }
-           sprintf(data,"%s",yoritweet[b-high]);
-            sleep(1);
-        }
 
         else if (strncmp(data, "2,9,", 4) == 0) {   //切断処理
             printf("ユーザ2　切断処理\n");
@@ -519,50 +519,48 @@ int main()          //メイン関数
         }
         else if(strncmp(data,"3,7,",4)==0){
             b=0;
-            log=strtok(data,"3,7,");
-           high=(int)(*log)-48;
-
+              log=strtok(data,"3,7,");
+             high=atoi(log);
            for(i=0;i<tweetnumber;i++){
-           if(u3ff[2]==0||u3ff[2]==1){
-           if(strncmp(alltweet[i], "3.", 2)==0){
-           kesin=strtok(alltweet[i],"3.");
-      sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u3ff[0]==1){
-           if(strncmp(alltweet[i], "1.", 2)==0){
-            kesin=strtok(alltweet[i],"1.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u3ff[1]==1){
-           if(strncmp(alltweet[i], "2.", 2)==0){
-            kesin=strtok(alltweet[i],"2.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u3ff[3]==1){
-           if(strncmp(alltweet[i], "4.", 2)==0){
-            kesin=strtok(alltweet[i],"4.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u3ff[4]==1){
-           if(strncmp(alltweet[i], "5.", 2)==0){
-            kesin=strtok(alltweet[i],"5.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
+                 if(u3ff[0]==1){
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                 kesin=strtok(alltweet[i],"1.");
+            sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u3ff[1]==1){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                  kesin=strtok(alltweet[i],"2.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u3ff[2]==1||u3ff[2]==0){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                  kesin=strtok(alltweet[i],"3.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u3ff[3]==1){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                  kesin=strtok(alltweet[i],"4.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u3ff[4]==1){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                  kesin=strtok(alltweet[i],"5.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                }
+        sprintf(data,"%s",yoritweet[b-high]);
+              sleep(1);
           }
-           sprintf(data,"%s",yoritweet[b-high]);
-            sleep(1);
-        }
-
         else if (strncmp(data, "3,9,", 4) == 0) {   //切断処理
             printf("ユーザ3　切断処理\n");
             userpid[2]=0;
@@ -656,51 +654,51 @@ int main()          //メイン関数
 			}
         }
         else if(strncmp(data,"4,7,",4)==0){
-            b=0;
-            log=strtok(data,"4,7,");
-           high=(int)(*log)-48;
+        b=0;
+
+              log=strtok(data,"4,7,");
+             high=(int)(*log)-48;
 
            for(i=0;i<tweetnumber;i++){
-           if(u4ff[3]==0||u4ff[3]==1){
-           if(strncmp(alltweet[i], "4.", 2)==0){
-           kesin=strtok(alltweet[i],"4.");
-      sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u4ff[0]==1){
-           if(strncmp(alltweet[i], "1.", 2)==0){
-            kesin=strtok(alltweet[i],"1.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u4ff[1]==1){
-           if(strncmp(alltweet[i], "2.", 2)==0){
-            kesin=strtok(alltweet[i],"2.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u4ff[2]==1){
-           if(strncmp(alltweet[i], "3.", 2)==0){
-            kesin=strtok(alltweet[i],"3.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u4ff[4]==1){
-           if(strncmp(alltweet[i], "5.", 2)==0){
-            kesin=strtok(alltweet[i],"5.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
+                 if(u4ff[0]==1){
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                 kesin=strtok(alltweet[i],"1.");
+            sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u4ff[1]==1){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                  kesin=strtok(alltweet[i],"2.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u4ff[2]==1){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                  kesin=strtok(alltweet[i],"3.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u4ff[3]==1||u4ff[3]==0){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                  kesin=strtok(alltweet[i],"4.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u4ff[4]==1){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                  kesin=strtok(alltweet[i],"5.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                }
+        sprintf(data,"%s",yoritweet[high]);
+              sleep(1);
           }
-           sprintf(data,"%s",yoritweet[b-high]);
-            sleep(1);
-        }
-
         else if (strncmp(data, "4,9,", 4) == 0) {   //切断処理
             printf("ユーザ4　切断処理\n");
             userpid[3]=0;
@@ -794,51 +792,51 @@ int main()          //メイン関数
 			}
         }
         else if(strncmp(data,"5,7,",4)==0){
-            b=0;
-            log=strtok(data,"5,7,");
-           high=(int)(*log)-48;
+        b=0;
+
+              log=strtok(data,"5,7,");
+            high=atoi(log);
 
            for(i=0;i<tweetnumber;i++){
-           if(u5ff[4]==0||u5ff[4]==1){
-           if(strncmp(alltweet[i], "5.", 2)==0){
-           kesin=strtok(alltweet[i],"5.");
-      sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u5ff[0]==1){
-           if(strncmp(alltweet[i], "1.", 2)==0){
-            kesin=strtok(alltweet[i],"1.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u5ff[1]==1){
-           if(strncmp(alltweet[i], "2.", 2)==0){
-            kesin=strtok(alltweet[i],"2.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u5ff[2]==1){
-           if(strncmp(alltweet[i], "3.", 2)==0){
-            kesin=strtok(alltweet[i],"3.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
-           if(u5ff[3]==1){
-           if(strncmp(alltweet[i], "4.", 2)==0){
-            kesin=strtok(alltweet[i],"4.");
-             sprintf(yoritweet[b],"%s",kesin);
-           b++;
-           }
-           }
+                 if(u5ff[0]==1){
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                 kesin=strtok(alltweet[i],"1.");
+            sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u5ff[1]==1){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                  kesin=strtok(alltweet[i],"2.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u5ff[2]==1){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                  kesin=strtok(alltweet[i],"3.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u5ff[3]==1||u4ff[3]==0){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                  kesin=strtok(alltweet[i],"4.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                 if(u5ff[4]==1||u5ff[4]==0){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                  kesin=strtok(alltweet[i],"5.");
+                   sprintf(yoritweet[b],"%s",kesin);
+                 b++;
+                 }
+                 }
+                }
+        sprintf(data,"%s",yoritweet[high]);
+              sleep(1);
           }
-           sprintf(data,"%s",yoritweet[b-high]);
-            sleep(1);
-        }
-
         else if (strncmp(data, "5,9,", 4) == 0) {   //切断処理
             printf("ユーザ5　切断処理\n");
             userpid[4]=0;
@@ -848,11 +846,269 @@ int main()          //メイン関数
         else if (strcmp(data, "5") == 0) {          //登録中の時
             printf("ユーザ5登録中\n");
         }
-
+        
+        
+        else if(strncmp(data,"1,sevensub,",9)==0){        //clientで7を入力時のサブ動作
+            b=0;
+            for(i=0;i<tweetnumber;i++){
+                 if(u1ff[0]==0||u1ff[0]==1){       //フォローしているつユーザのツイートのみを対象とする．ただし，本人のツイートは無条件に参照
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                  sprintf(yoritweet[b],"%s",alltweet[i]); //yoritweeetに格納
+                 b++;
+                 }
+                 }
+                 if(u1ff[1]==1){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                   sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u1ff[2]==1){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                  sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u1ff[3]==1){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                   sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u1ff[4]==1){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                   sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                }                             //forループ終了
+        use= (char *)malloc(1000);          //dataに格納する前の仮のポインタの設定
+            for(o=0;o<b;o++){
+                tnd = (char *)malloc(20); //ここから
+                sprintf(tnd,"%d",o);
+                c = (char *)malloc(strlen(tnd)+1);
+                strcpy(c, tnd);
+                free(tnd);               //ここまで数値oを数字(文字列)cに変換
+                
+                strcat(use,c);         //useにツイート番号 ユーザ番号．ツイート内容を入力
+                strcat(use,"  ");
+            strcat(use,yoritweet[o]);
+            strcat(use,"\n");
+            }
+            strcpy(data,use);           //useをdataにコピー
+             
+            free(use);
+                          printf("read comp log\n"); //動作の終了通知
+        }
+        
+        else if(strncmp(data,"2,sevensub,",9)==0){             // ユーザ1と同様の動作
+            b=0;
+            for(i=0;i<tweetnumber;i++){
+                 if(u2ff[0]==1){
+                 if(strncmp(alltweet[i], "1.", 2)==0){
+                  sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u2ff[1]==1||u2ff[1]==0){
+                 if(strncmp(alltweet[i], "2.", 2)==0){
+                   sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u2ff[2]==1){
+                 if(strncmp(alltweet[i], "3.", 2)==0){
+                 sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u2ff[3]==1){
+                 if(strncmp(alltweet[i], "4.", 2)==0){
+                   sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                 if(u2ff[4]==1){
+                 if(strncmp(alltweet[i], "5.", 2)==0){
+                  sprintf(yoritweet[b],"%s",alltweet[i]);
+                 b++;
+                 }
+                 }
+                }
+            
+            use= (char *)malloc(1000);
+                       for(o=0;o<b;o++){
+                           tnd = (char *)malloc(20);
+                           sprintf(tnd,"%d",o);
+                           c = (char *)malloc(strlen(tnd)+1);
+                           strcpy(c, tnd);
+                           free(tnd);
+                            strcat(use,c);
+                           strcat(use,"  ");
+                       strcat(use,yoritweet[o]);
+                       strcat(use,"\n");
+                       }
+                       strcpy(data,use);
+                       free(use);
+                                     printf("read  \n");
+        }
+         else if(strncmp(data,"3,sevensub,",9)==0){             // ユーザ1と同様の動作
+                     b=0;
+                     for(i=0;i<tweetnumber;i++){
+                          if(u3ff[0]==1){
+                          if(strncmp(alltweet[i], "1.", 2)==0){
+                           sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u3ff[1]==1){
+                          if(strncmp(alltweet[i], "2.", 2)==0){
+                            sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u3ff[2]==1||u3ff[2]==0){
+                          if(strncmp(alltweet[i], "3.", 2)==0){
+                          sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u3ff[3]==1){
+                          if(strncmp(alltweet[i], "4.", 2)==0){
+                            sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u3ff[4]==1){
+                          if(strncmp(alltweet[i], "5.", 2)==0){
+                           sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                         }
+                     
+                     use= (char *)malloc(1000);
+                                for(o=0;o<b;o++){
+                                    tnd = (char *)malloc(20);
+                                    sprintf(tnd,"%d",o);
+                                    c = (char *)malloc(strlen(tnd)+1);
+                                    strcpy(c, tnd);
+                                    free(tnd);
+                                     strcat(use,c);
+                                    strcat(use,"  ");
+                                strcat(use,yoritweet[o]);
+                                strcat(use,"\n");
+                                }
+                                strcpy(data,use);
+                                free(use);
+                                              printf("read  \n");
+                 }
+               
+                 else if(strncmp(data,"4,sevensub,",9)==0){             // ユーザ1と同様の動作
+                     b=0;
+                     for(i=0;i<tweetnumber;i++){
+                          if(u4ff[0]==1){
+                          if(strncmp(alltweet[i], "1.", 2)==0){
+                           sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u4ff[1]==1){
+                          if(strncmp(alltweet[i], "2.", 2)==0){
+                            sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u4ff[2]==1){
+                          if(strncmp(alltweet[i], "3.", 2)==0){
+                          sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u4ff[3]==1||u4ff[3]==0){
+                          if(strncmp(alltweet[i], "4.", 2)==0){
+                            sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                          if(u4ff[4]==1){
+                          if(strncmp(alltweet[i], "5.", 2)==0){
+                           sprintf(yoritweet[b],"%s",alltweet[i]);
+                          b++;
+                          }
+                          }
+                         }
+                      use= (char *)malloc(1000);
+                                                 for(o=0;o<b;o++){
+                                                     tnd = (char *)malloc(20);
+                                                     sprintf(tnd,"%d",o);
+                                                     c = (char *)malloc(strlen(tnd)+1);
+                                                     strcpy(c, tnd);
+                                                     free(tnd);
+                                                      strcat(use,c);
+                                                     strcat(use,"  ");
+                                                 strcat(use,yoritweet[o]);
+                                                 strcat(use,"\n");
+                                                 }
+                                                 strcpy(data,use);
+                                                 free(use);
+                                                               printf("read  \n");
+                                  }
+                     else if(strncmp(data,"5,sevensub,",9)==0){             // ユーザ1と同様の動作
+                         b=0;
+                         for(i=0;i<tweetnumber;i++){
+                              if(u5ff[0]==1){
+                              if(strncmp(alltweet[i], "1.", 2)==0){
+                               sprintf(yoritweet[b],"%s",alltweet[i]);
+                              b++;
+                              }
+                              }
+                              if(u5ff[1]==1){
+                              if(strncmp(alltweet[i], "2.", 2)==0){
+                                sprintf(yoritweet[b],"%s",alltweet[i]);
+                              b++;
+                              }
+                              }
+                              if(u5ff[2]==1){
+                              if(strncmp(alltweet[i], "3.", 2)==0){
+                              sprintf(yoritweet[b],"%s",alltweet[i]);
+                              b++;
+                              }
+                              }
+                              if(u5ff[3]==1){
+                              if(strncmp(alltweet[i], "4.", 2)==0){
+                                sprintf(yoritweet[b],"%s",alltweet[i]);
+                              b++;
+                              }
+                              }
+                              if(u5ff[4]==1||u5ff[4]==0){
+                              if(strncmp(alltweet[i], "5.", 2)==0){
+                               sprintf(yoritweet[b],"%s",alltweet[i]);
+                              b++;
+                              }
+                              }
+                             }
+                         use= (char *)malloc(1000);
+                                for(o=0;o<b;o++){
+                                    tnd = (char *)malloc(20);
+                                    sprintf(tnd,"%d",o);
+                                    c = (char *)malloc(strlen(tnd)+1);
+                                    strcpy(c, tnd);
+                                    free(tnd);
+                                     strcat(use,c);
+                                    strcat(use,"  ");
+                                strcat(use,yoritweet[o]);
+                                strcat(use,"\n");
+                                }
+                                strcpy(data,use);
+                                free(use);
+                                              printf("read  \n");
+                 }
+        
         else if(strncmp(data,"1,7,",4)==0){
    b=0;
     log=strtok(data,"1,7,");
-   high=(int)(*log)-48;
+   high=atoi(log);
 
    for(i=0;i<tweetnumber;i++){
    if(u1ff[0]==0||u1ff[0]==1){
@@ -891,203 +1147,10 @@ sprintf(yoritweet[b],"%s",kesin);
    }
    }
   }
-   sprintf(data,"%s",yoritweet[b-high]);
+   sprintf(data,"%s",yoritweet[high]);
     sleep(1);
 }
 
-
-
-else if(strncmp(data,"2,7,",4)==0){
-
-b=0;
-
-      log=strtok(data,"2,7,");
-     high=(int)(*log)-48;
-
-
-   for(i=0;i<tweetnumber;i++){
-         if(u2ff[0]==1){
-         if(strncmp(alltweet[i], "1.", 2)==0){
-         kesin=strtok(alltweet[i],"1.");
-    sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u2ff[1]==1||u2ff[1]==0){
-         if(strncmp(alltweet[i], "2.", 2)==0){
-          kesin=strtok(alltweet[i],"2.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u2ff[2]==1){
-         if(strncmp(alltweet[i], "3.", 2)==0){
-          kesin=strtok(alltweet[i],"3.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u2ff[3]==1){
-         if(strncmp(alltweet[i], "4.", 2)==0){
-          kesin=strtok(alltweet[i],"4.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u2ff[4]==1){
-         if(strncmp(alltweet[i], "5.", 2)==0){
-          kesin=strtok(alltweet[i],"5.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-        }
-sprintf(data,"%s",yoritweet[b-high]);
-      sleep(1);
-  }
-
-else if(strncmp(data,"3,7,",4)==0){
-
-        b=0;
-
-              log=strtok(data,"3,7,");
-             high=(int)(*log)-48;
-
-
-           for(i=0;i<tweetnumber;i++){
-                 if(u3ff[0]==1){
-                 if(strncmp(alltweet[i], "1.", 2)==0){
-                 kesin=strtok(alltweet[i],"1.");
-            sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u3ff[1]==1){
-                 if(strncmp(alltweet[i], "2.", 2)==0){
-                  kesin=strtok(alltweet[i],"2.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u3ff[2]==1||u3ff[2]==0){
-                 if(strncmp(alltweet[i], "3.", 2)==0){
-                  kesin=strtok(alltweet[i],"3.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u3ff[3]==1){
-                 if(strncmp(alltweet[i], "4.", 2)==0){
-                  kesin=strtok(alltweet[i],"4.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u3ff[4]==1){
-                 if(strncmp(alltweet[i], "5.", 2)==0){
-                  kesin=strtok(alltweet[i],"5.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                }
-        sprintf(data,"%s",yoritweet[b-high]);
-              sleep(1);
-          }
-
-else if(strncmp(data,"4,7,",4)==0){
-        b=0;
-
-              log=strtok(data,"4,7,");
-             high=(int)(*log)-48;
-
-           for(i=0;i<tweetnumber;i++){
-                 if(u4ff[0]==1){
-                 if(strncmp(alltweet[i], "1.", 2)==0){
-                 kesin=strtok(alltweet[i],"1.");
-            sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u4ff[1]==1){
-                 if(strncmp(alltweet[i], "2.", 2)==0){
-                  kesin=strtok(alltweet[i],"2.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u4ff[2]==1){
-                 if(strncmp(alltweet[i], "3.", 2)==0){
-                  kesin=strtok(alltweet[i],"3.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u4ff[3]==1||u4ff[3]==0){
-                 if(strncmp(alltweet[i], "4.", 2)==0){
-                  kesin=strtok(alltweet[i],"4.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                 if(u4ff[4]==1){
-                 if(strncmp(alltweet[i], "5.", 2)==0){
-                  kesin=strtok(alltweet[i],"5.");
-                   sprintf(yoritweet[b],"%s",kesin);
-                 b++;
-                 }
-                 }
-                }
-        sprintf(data,"%s",yoritweet[b-high]);
-              sleep(1);
-          }
-
-else if(strncmp(data,"5,7,",4)==0){
-b=0;
-
-      log=strtok(data,"5,7,");
-     high=(int)(*log)-48;
-
-   for(i=0;i<tweetnumber;i++){
-         if(u5ff[0]==1){
-         if(strncmp(alltweet[i], "1.", 2)==0){
-         kesin=strtok(alltweet[i],"1.");
-    sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u5ff[1]==1){
-         if(strncmp(alltweet[i], "2.", 2)==0){
-          kesin=strtok(alltweet[i],"2.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u5ff[2]==1){
-         if(strncmp(alltweet[i], "3.", 2)==0){
-          kesin=strtok(alltweet[i],"3.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u5ff[3]==1||u4ff[3]==0){
-         if(strncmp(alltweet[i], "4.", 2)==0){
-          kesin=strtok(alltweet[i],"4.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-         if(u5ff[4]==1||u5ff[4]==0){
-         if(strncmp(alltweet[i], "5.", 2)==0){
-          kesin=strtok(alltweet[i],"5.");
-           sprintf(yoritweet[b],"%s",kesin);
-         b++;
-         }
-         }
-        }
-sprintf(data,"%s",yoritweet[b-high]);
-      sleep(1);
-  }
         sleep(1);
       }
     }
