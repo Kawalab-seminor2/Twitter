@@ -141,7 +141,7 @@ int main()          //メイン関数
 	  for(i=0; i<3; i++)
 	    printf("%s\n", user[i]);
 
-	  for(i=0; i<99; i++){
+	  for(i=0; i<=id; i++){
 	    if(strcmp(userID[i],user[1])==0){
 	      sprintf(data, "22");
 	      printf("idError\n");
